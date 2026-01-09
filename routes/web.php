@@ -2,14 +2,25 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+use App\Livewire\Invite\Show as InviteShow;
+use App\Livewire\Events\Index as EventsIndex;
+use App\Livewire\Events\Form as EventsForm;
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// HOME
+Route::get('/', function () {
+    return auth()->check()
+        ? redirect()->route('events.index')
+        : redirect()->route('login');
+});
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+// PUBLIC INVITE
+Route::get('/inv/{slug}-{token}', InviteShow::class)->name('invite.show');
 
-require __DIR__.'/auth.php';
+// ADMIN
+Route::middleware(['auth'])->group(function () {
+    Route::get('/events', EventsIndex::class)->name('events.index');
+    Route::get('/events/create', EventsForm::class)->name('events.create');
+    Route::get('/events/{event}/edit', EventsForm::class)->name('events.edit');
+});
+
+require __DIR__ . '/auth.php';
