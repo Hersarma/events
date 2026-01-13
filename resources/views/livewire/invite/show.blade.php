@@ -23,29 +23,20 @@
             x-show="!opened"
             x-transition.opacity.duration.300ms
         >
-            <button
-                type="button"
-                class="group rounded-3xl border border-gray-200 bg-white px-8 py-6 shadow-lg hover:shadow-xl transition"
-                @click="
-                    opened = true;
-                    const v = document.getElementById('inviteVideo');
-                    if (v) {
-                        v.muted = false; // po potrebi (mobile često blokira unmuted)
-                        v.play();
-                    }
-                "
-            >
-                <div class="flex flex-col items-center gap-3">
-                    {{-- ovde ubaci SVG/PNG kovertu --}}
-                    <div class="h-16 w-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center">
-                        <span class="text-2xl">✉️</span>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-lg font-semibold">Otvori pozivnicu</p>
-                        <p class="text-sm text-gray-600">Klikni da pustiš video</p>
-                    </div>
-                </div>
-            </button>
+           <button
+    type="button"
+    class="absolute inset-0 cursor-pointer"
+    aria-label="Open invitation"
+    @click="
+        opened = true;
+        const v = document.getElementById('inviteVideo');
+        if (v) {
+            v.muted = false;
+            v.play();
+        }
+    "
+></button>
+
         </div>
 
         {{-- title overlay --}}
