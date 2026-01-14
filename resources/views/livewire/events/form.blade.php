@@ -2,10 +2,10 @@
     <div class="flex items-center justify-between gap-3">
         <div>
             <h1 class="text-2xl font-bold">
-                {{ $event ? 'Edit event' : 'Create event' }}
+                {{ $event ? 'Izmena događaja' : 'Kreiranje događaja' }}
             </h1>
             <p class="text-sm text-gray-600 mt-1">
-                Upload MP4 + podešavanja pozivnice
+                Upload MP4 videa i podešavanje digitalne pozivnice
             </p>
         </div>
 
@@ -13,14 +13,14 @@
             @if($this->inviteUrl)
                 <a href="{{ $this->inviteUrl }}" target="_blank"
                    class="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold">
-                    Open invite
+                    Otvori pozivnicu
                 </a>
 
                 <button type="button"
                         class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white"
                         x-data
                         @click="navigator.clipboard.writeText(@js($this->inviteUrl))">
-                    Copy link
+                    Kopiraj link
                 </button>
             @endif
         </div>
@@ -35,7 +35,7 @@
     <form wire:submit.prevent="save" class="mt-6 space-y-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
-                <label class="text-sm font-medium text-gray-700">Naziv eventa</label>
+                <label class="text-sm font-medium text-gray-700">Naziv događaja</label>
                 <input wire:model.live="title"
                        class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                 @error('title') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
@@ -72,7 +72,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                <label class="text-sm font-medium text-gray-700">Primary color</label>
+                <label class="text-sm font-medium text-gray-700">Primarna boja</label>
                 <div class="mt-2 flex items-center gap-3">
                     <input type="color" wire:model.defer="primary_color" class="h-10 w-14 rounded-lg border border-gray-200" />
                     <input wire:model.defer="primary_color"
@@ -82,7 +82,7 @@
             </div>
 
             <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                <label class="text-sm font-medium text-gray-700">Secondary color</label>
+                <label class="text-sm font-medium text-gray-700">Sekundarna boja</label>
                 <div class="mt-2 flex items-center gap-3">
                     <input type="color" wire:model.defer="secondary_color" class="h-10 w-14 rounded-lg border border-gray-200" />
                     <input wire:model.defer="secondary_color"
@@ -96,10 +96,10 @@
             <div class="flex items-center justify-between">
                 <div>
                     <div class="font-semibold">Video (MP4)</div>
-                    <div class="text-sm text-gray-600">Uploaduj video koji ide na vrh pozivnice.</div>
+                    <div class="text-sm text-gray-600">Uploaduj video koji se prikazuje na vrhu pozivnice.</div>
                 </div>
                 <div class="text-sm text-gray-500">
-                    Max 50MB
+                    Maksimalno 50 MB
                 </div>
             </div>
 
@@ -109,7 +109,7 @@
             @error('video') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
 
             <div wire:loading wire:target="video" class="text-sm text-gray-600">
-                Uploadujem video...
+                Upload videa u toku...
             </div>
 
             @if($video_path)
@@ -123,15 +123,15 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                <label class="text-sm font-medium text-gray-700">Aktivan</label>
+                <label class="text-sm font-medium text-gray-700">Aktivan događaj</label>
                 <div class="mt-3 flex items-center gap-3">
                     <input type="checkbox" wire:model.defer="is_active" class="h-5 w-5 rounded border-gray-300" />
-                    <span class="text-sm text-gray-700">Event je dostupan preko linka</span>
+                    <span class="text-sm text-gray-700">Događaj je dostupan putem linka</span>
                 </div>
             </div>
 
             <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                <label class="text-sm font-medium text-gray-700">Ističe (opciono)</label>
+                <label class="text-sm font-medium text-gray-700">Datum isteka (opciono)</label>
                 <input type="datetime-local" wire:model.defer="expires_at"
                        class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                 @error('expires_at') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
@@ -141,12 +141,12 @@
         <div class="flex items-center justify-end gap-3">
             <a href="{{ route('events.index') }}"
                class="rounded-xl border border-gray-200 bg-white px-5 py-2 text-sm font-semibold">
-                Cancel
+                Otkaži
             </a>
 
             <button type="submit"
                     class="rounded-xl bg-gray-900 px-6 py-2 text-sm font-semibold text-white">
-                Save
+                Sačuvaj
             </button>
         </div>
     </form>
