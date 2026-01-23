@@ -10,26 +10,39 @@ return new class extends Migration {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+
+            $table->string('template', 30)->default('wedding'); // wedding|kids|celebration
+            $table->string('language', 10)->default('sr');       // sr|hr|en...
+
             $table->string('title');
             $table->string('slug')->index();
+            $table->string('token', 64)->unique();
 
-            $table->dateTime('date_at')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('expires_at')->nullable();
 
+            // Core info
+            $table->timestamp('date_at')->nullable();
             $table->string('location_name')->nullable();
+            $table->string('location_address')->nullable();
             $table->string('location_url')->nullable();
-
-            $table->string('video_path')->nullable(); // storage path
-
-            $table->string('primary_color', 20)->default('#111827');   // fallback
-            $table->string('secondary_color', 20)->default('#6B7280');
-
             $table->string('rsvp_email')->nullable();
 
-            $table->string('token', 40)->unique(); // random token
-            $table->boolean('is_active')->default(true);
-            $table->dateTime('expires_at')->nullable();
+            // Media
+            $table->string('hero_type', 10)->default('video'); // video|image
+            $table->string('hero_video_path')->nullable();
+            $table->string('hero_image_path')->nullable();
+            $table->string('map_image_path')->nullable();
+            $table->string('footer_logo_path')->nullable();
+
+            // Flexible configs
+            $table->json('content')->nullable();
+            $table->json('style')->nullable();
 
             $table->timestamps();
+
+            $table->unique(['slug', 'token']); // optional, token je već unique
         });
     }
 

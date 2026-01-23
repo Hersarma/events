@@ -5,10 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Rsvp extends Model
+class EventRsvp extends Model
 {
+    protected $table = 'event_rsvps';
+
     protected $fillable = [
-        'event_id','name','email','guests_count','status',
+        'event_id',
+        'status',
+        'name',
+        'email',
+        'phone',
+        'guests_count',
+        'note',
+        'ip_address',
+        'user_agent',
     ];
 
     public function event(): BelongsTo

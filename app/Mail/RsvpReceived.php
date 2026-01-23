@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Rsvp;
+use App\Models\EventRsvp;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -11,7 +11,7 @@ class RsvpReceived extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Rsvp $rsvp) {}
+    public function __construct(public EventRsvp $rsvp) {}
 
     public function build()
     {

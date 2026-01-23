@@ -4,7 +4,7 @@ namespace App\Livewire\Invite;
 
 use App\Mail\RsvpReceived;
 use App\Models\Event;
-use App\Models\Rsvp;
+use App\Models\EventRsvp;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -16,8 +16,9 @@ class Show extends Component
 
     public string $name = '';
     public string $email = '';
+    public string $phone = '';
     public int $guests_count = 1;
-    public string $status = 'yes';
+    public string $status = 'yes'; // yes|maybe|no
 
     public bool $sent = false;
 
@@ -40,18 +41,22 @@ class Show extends Component
     public function submit(): void
     {
         $this->validate([
-            'name' => ['required','string','min:2','max:80'],
-            'email' => ['nullable','email','max:120'],
-            'guests_count' => ['required','integer','min:1','max:20'],
-            'status' => ['required','in:yes,no,maybe'],
+            'status' => ['required', 'in:yes,maybe,no'],
+            'name' => ['required', 'string', 'min:2', 'max:80'],
+            'email' => ['nullable', 'email', 'max:120'],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'guests_count' => ['required', 'integer', 'min:1', 'max:20'],
         ]);
 
-        $rsvp = Rsvp::create([
+        $rsvp = EventRsvp::create([
             'event_id' => $this->event->id,
+            'status' => $this->status,
             'name' => trim($this->name),
             'email' => trim($this->email) ?: null,
+            'phone' => trim($this->phone) ?: null,
             'guests_count' => (int) $this->guests_count,
-            'status' => $this->status,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
         ]);
 
         if ($this->event->rsvp_email) {
@@ -60,8 +65,7 @@ class Show extends Component
 
         $this->sent = true;
 
-        // reset forme, ali ostavi status ako želiš
-        $this->reset(['name','email','guests_count']);
+        $this->reset(['name', 'email', 'phone', 'guests_count']);
         $this->guests_count = 1;
     }
 

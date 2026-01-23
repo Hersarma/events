@@ -9,23 +9,48 @@ use Illuminate\Support\Str;
 class Event extends Model
 {
     protected $fillable = [
-        'title','slug','date_at',
-        'location_name','location_url',
-        'video_path',
-        'primary_color','secondary_color',
+        'user_id',
+        'template',
+        'language',
+
+        'title',
+        'slug',
+        'token',
+
+        'is_active',
+        'expires_at',
+
+        'date_at',
+        'location_name',
+        'location_address',
+        'location_url',
         'rsvp_email',
-        'token','is_active','expires_at',
+
+        'hero_type',
+        'hero_video_path',
+        'hero_image_path',
+        'map_image_path',
+        'footer_logo_path',
+
+        'content',
+        'style',
+        'location_marker_path',
+        'location_image_path',
+
+
     ];
 
     protected $casts = [
         'date_at' => 'datetime',
         'expires_at' => 'datetime',
+        'content' => 'array',
+        'style' => 'array',
         'is_active' => 'boolean',
     ];
 
     public function rsvps(): HasMany
     {
-        return $this->hasMany(Rsvp::class);
+        return $this->hasMany(EventRsvp::class);
     }
 
     public function getInviteUrlAttribute(): string
@@ -35,11 +60,11 @@ class Event extends Model
 
     public static function makeSlug(string $title): string
     {
-        return Str::slug($title);
+        return Str::slug($title) ?: 'event';
     }
 
     public static function makeToken(): string
     {
-        return Str::random(24); // 24 je dovoljno, a nije predugačko
+        return Str::lower(Str::random(6) . '-' . Str::random(6));
     }
 }
