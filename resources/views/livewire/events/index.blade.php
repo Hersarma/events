@@ -40,6 +40,14 @@
                                 @click="navigator.clipboard.writeText(@js($event->invite_url))">
                             Kopiraj link
                         </button>
+                        <button
+                            type="button"
+                            wire:click="confirmDelete({{ $event->id }})"
+                            class="rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+                        >
+                            Obriši
+                        </button>
+
                     </div>
                 </div>
             </div>
@@ -49,4 +57,39 @@
             </div>
         @endforelse
     </div>
+    <x-modal name="confirm-delete-event" maxWidth="md">
+    <div class="p-6">
+        <h2 class="text-lg font-semibold text-gray-900">
+            Obriši događaj
+        </h2>
+
+        <p class="mt-2 text-sm text-gray-600">
+            Da li si siguran da želiš da obrišeš događaj
+            <span class="font-semibold">
+                {{ $eventToDelete?->title }}
+            </span>?
+            <br>
+            Ova akcija se ne može poništiti.
+        </p>
+
+        <div class="mt-6 flex justify-end gap-3">
+            <button
+                type="button"
+                class="rounded-xl border border-gray-200 px-4 py-2 text-sm"
+                x-on:click="$dispatch('close-modal', 'confirm-delete-event')"
+            >
+                Otkaži
+            </button>
+
+            <button
+                type="button"
+                wire:click="delete"
+                class="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white"
+            >
+                Obriši
+            </button>
+        </div>
+    </div>
+</x-modal>
+
 </div>

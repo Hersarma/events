@@ -15,7 +15,8 @@ class Form extends Component
 
     public ?Event $event = null;
 
-    public string $template = 'wedding'; // wedding|kids|celebration
+    // ✅ samo proslava (možeš kasnije i ovo da izbaciš skroz ako hoćeš)
+    public string $template = 'celebration';
     public string $language = 'sr';
 
     public string $title = '';
@@ -30,41 +31,44 @@ class Form extends Component
     public ?string $expires_at = null;
 
     public string $hero_type = 'video'; // video|image
+
+    // LOCATION colors
     public string $location_bg = '#ffffff';
     public string $location_text = '#111827';
     public string $location_sub_text = '#6b7280';
+
     // DATE section colors
     public string $date_bg = '#ffffff';
     public string $date_text_primary = '#111827';
     public string $date_text_secondary = '#6b7280';
-    public string $date_lines = '#d1d5db';
+    public string $date_lines = '#e5e7eb';
 
-    // RSVP sekcija – stil
-    public string $rsvp_bg = '#6F7C72';
-    public string $rsvp_title_color = '#FFFFFF';
-    public string $rsvp_subtitle_color = '#FFFFFF';
+    // RSVP sekcija – stil (neutral default)
+    public string $rsvp_bg = '#ffffff';
+    public string $rsvp_title_color = '#111827';
+    public string $rsvp_subtitle_color = '#6b7280';
+    public string $rsvp_third_color = '#6b7280';
 
-    public string $rsvp_card_bg = '#D8CDBD';
-    public string $rsvp_card_border = 'rgba(255,255,255,0.15)';
+    public string $rsvp_card_bg = '#ffffff';
+    public string $rsvp_card_border = '#e5e7eb';
 
-    public string $rsvp_label_color = '#FFFFFF';
+    public string $rsvp_label_color = '#111827';
 
-    public string $rsvp_input_bg = '#FFFFFF';
-    public string $rsvp_input_border = '#CFC6B7';
+    public string $rsvp_input_bg = '#ffffff';
+    public string $rsvp_input_border = '#d1d5db';
     public string $rsvp_input_text = '#111827';
 
-    public string $rsvp_radio_accent = '#6F7C72';
-    public string $rsvp_radio_border = '#FFFFFF';
+    public string $rsvp_radio_accent = '#111827';
+    public string $rsvp_radio_border = '#d1d5db';
 
-    public string $rsvp_button_bg = '#6F7C72';
-    public string $rsvp_button_text = '#FFFFFF';
-
+    public string $rsvp_button_bg = '#111827';
+    public string $rsvp_button_text = '#ffffff';
 
     /** uploads */
-    public $hero_video = null;   // mp4
-    public $hero_image = null;   // jpg/png
-    public $map_image  = null;   // jpg/png
-    public $footer_logo = null;  // png/svg
+    public $hero_video = null;     // mp4
+    public $hero_image = null;     // jpg/png
+    public $map_image  = null;     // jpg/png
+    public $footer_logo = null;    // png/svg
     public $location_marker = null; // png
     public $location_image = null;  // jpg/png/webp
 
@@ -79,7 +83,9 @@ class Form extends Component
     public string $token = '';
     public string $slug = '';
 
+    // ✅ content prazan po defaultu (nema više auto-teksta)
     public array $content = [];
+    // ✅ style postoji (neutralno)
     public array $style = [];
 
     public function mount(?Event $event = null): void
@@ -87,8 +93,8 @@ class Form extends Component
         $this->event = $event;
 
         if ($event) {
-            $this->template = $event->template;
-            $this->language = $event->language;
+            $this->template = $event->template ?: 'celebration';
+            $this->language = $event->language ?: 'sr';
 
             $this->title = $event->title;
             $this->slug = $event->slug;
@@ -104,7 +110,7 @@ class Form extends Component
             $this->is_active = (bool) $event->is_active;
             $this->expires_at = $event->expires_at?->format('Y-m-d\TH:i');
 
-            $this->hero_type = $event->hero_type;
+            $this->hero_type = $event->hero_type ?: 'video';
 
             $this->hero_video_path = $event->hero_video_path;
             $this->hero_image_path = $event->hero_image_path;
@@ -114,6 +120,7 @@ class Form extends Component
             $this->location_marker_path = $event->location_marker_path;
             $this->location_image_path  = $event->location_image_path;
 
+            // style -> properties (fallback neutral)
             $this->location_bg = data_get($event->style, 'location.bg', '#ffffff');
             $this->location_text = data_get($event->style, 'location.text', '#111827');
             $this->location_sub_text = data_get($event->style, 'location.sub_text', '#6b7280');
@@ -121,34 +128,39 @@ class Form extends Component
             $this->date_bg = data_get($event->style, 'date.bg', '#ffffff');
             $this->date_text_primary = data_get($event->style, 'date.text_primary', '#111827');
             $this->date_text_secondary = data_get($event->style, 'date.text_secondary', '#6b7280');
-            $this->date_lines = data_get($event->style, 'date.lines', '#d1d5db');
+            $this->date_lines = data_get($event->style, 'date.lines', '#e5e7eb');
 
-            $this->rsvp_bg = data_get($event->style, 'rsvp.bg', '#6F7C72');
-            $this->rsvp_title_color = data_get($event->style, 'rsvp.title_color', '#FFFFFF');
-            $this->rsvp_subtitle_color = data_get($event->style, 'rsvp.subtitle_color', '#FFFFFF');
+            $this->rsvp_bg = data_get($event->style, 'rsvp.bg', '#ffffff');
+            $this->rsvp_title_color = data_get($event->style, 'rsvp.title_color', '#111827');
+            $this->rsvp_subtitle_color = data_get($event->style, 'rsvp.subtitle_color', '#6b7280');
+            $this->rsvp_third_color = data_get($event->style, 'rsvp.third_color', '#6b7280');
 
-            $this->rsvp_card_bg = data_get($event->style, 'rsvp.card_bg', '#D8CDBD');
-            $this->rsvp_card_border = data_get($event->style, 'rsvp.card_border', 'rgba(255,255,255,0.15)');
+            $this->rsvp_card_bg = data_get($event->style, 'rsvp.card_bg', '#ffffff');
+            $this->rsvp_card_border = data_get($event->style, 'rsvp.card_border', '#e5e7eb');
 
-            $this->rsvp_label_color = data_get($event->style, 'rsvp.label_color', '#FFFFFF');
+            $this->rsvp_label_color = data_get($event->style, 'rsvp.label_color', '#111827');
 
-            $this->rsvp_input_bg = data_get($event->style, 'rsvp.input_bg', '#FFFFFF');
-            $this->rsvp_input_border = data_get($event->style, 'rsvp.input_border', '#CFC6B7');
+            $this->rsvp_input_bg = data_get($event->style, 'rsvp.input_bg', '#ffffff');
+            $this->rsvp_input_border = data_get($event->style, 'rsvp.input_border', '#d1d5db');
             $this->rsvp_input_text = data_get($event->style, 'rsvp.input_text', '#111827');
 
-            $this->rsvp_radio_accent = data_get($event->style, 'rsvp.radio_accent', '#6F7C72');
-            $this->rsvp_radio_border = data_get($event->style, 'rsvp.radio_border', '#FFFFFF');
+            $this->rsvp_radio_accent = data_get($event->style, 'rsvp.radio_accent', '#111827');
+            $this->rsvp_radio_border = data_get($event->style, 'rsvp.radio_border', '#d1d5db');
 
-            $this->rsvp_button_bg = data_get($event->style, 'rsvp.button_bg', '#6F7C72');
-            $this->rsvp_button_text = data_get($event->style, 'rsvp.button_text', '#FFFFFF');
+            $this->rsvp_button_bg = data_get($event->style, 'rsvp.button_bg', '#111827');
+            $this->rsvp_button_text = data_get($event->style, 'rsvp.button_text', '#ffffff');
 
-
-            $this->content = $event->content ?? $this->defaultContent($this->template);
-            $this->style   = $event->style   ?? $this->defaultStyle($this->template);
+            // ✅ content/style iz baze (bez default teksta)
+            $this->content = is_array($event->content) ? $event->content : [];
+            $this->style   = is_array($event->style) ? $event->style : $this->whiteStyle();
         } else {
+            // ✅ NOV EVENT: prazan content, neutral style
             $this->token = Event::makeToken();
-            $this->content = $this->defaultContent($this->template);
-            $this->style   = $this->defaultStyle($this->template);
+            $this->content = [];
+            $this->style   = $this->whiteStyle();
+
+            // ✅ obavezno i properties da se podudare sa style-om
+            $this->applyStyleToProps($this->style);
         }
     }
 
@@ -159,18 +171,20 @@ class Form extends Component
         }
     }
 
+    // ✅ više ne resetujemo content na default teksteve
     public function updatedTemplate(): void
     {
         if (! $this->event) {
-            $this->content = $this->defaultContent($this->template);
-            $this->style   = $this->defaultStyle($this->template);
+            $this->content = [];
+            $this->style   = $this->whiteStyle();
+            $this->applyStyleToProps($this->style);
         }
     }
 
     public function save(): void
     {
         $this->validate([
-            'template' => ['required', 'in:wedding,kids,celebration'],
+            'template' => ['required', 'in:celebration'],
             'language' => ['required', 'string', 'max:10'],
 
             'title' => ['required', 'string', 'min:3', 'max:120'],
@@ -202,6 +216,8 @@ class Form extends Component
             'rsvp_bg' => ['required','string','max:30'],
             'rsvp_title_color' => ['required','string','max:30'],
             'rsvp_subtitle_color' => ['required','string','max:30'],
+            'rsvp_third_color' => ['required','string','max:30'],
+
             'rsvp_card_bg' => ['required','string','max:30'],
             'rsvp_card_border' => ['required','string','max:60'],
             'rsvp_label_color' => ['required','string','max:30'],
@@ -213,10 +229,8 @@ class Form extends Component
             'rsvp_button_bg' => ['required','string','max:30'],
             'rsvp_button_text' => ['required','string','max:30'],
 
-
-            'location_marker' => ['nullable','image','mimes:png','max:2048'], // 2MB
-            'location_image' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:10240'], // 10MB
-
+            'location_marker' => ['nullable','image','mimes:png','max:2048'],
+            'location_image' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:10240'],
 
             'content' => ['array'],
             'style' => ['array'],
@@ -224,9 +238,12 @@ class Form extends Component
 
         $slug = $this->event?->slug ?: Event::makeSlug($this->title);
         $token = $this->event?->token ?: ($this->token ?: Event::makeToken());
+
+        // sync props -> style json
         data_set($this->style, 'location.bg', $this->location_bg);
         data_set($this->style, 'location.text', $this->location_text);
         data_set($this->style, 'location.sub_text', $this->location_sub_text);
+
         data_set($this->style, 'date.bg', $this->date_bg);
         data_set($this->style, 'date.text_primary', $this->date_text_primary);
         data_set($this->style, 'date.text_secondary', $this->date_text_secondary);
@@ -235,6 +252,7 @@ class Form extends Component
         data_set($this->style, 'rsvp.bg', $this->rsvp_bg);
         data_set($this->style, 'rsvp.title_color', $this->rsvp_title_color);
         data_set($this->style, 'rsvp.subtitle_color', $this->rsvp_subtitle_color);
+        data_set($this->style, 'rsvp.third_color', $this->rsvp_third_color);
 
         data_set($this->style, 'rsvp.card_bg', $this->rsvp_card_bg);
         data_set($this->style, 'rsvp.card_border', $this->rsvp_card_border);
@@ -251,7 +269,6 @@ class Form extends Component
         data_set($this->style, 'rsvp.button_bg', $this->rsvp_button_bg);
         data_set($this->style, 'rsvp.button_text', $this->rsvp_button_text);
 
-
         // upload marker
         if ($this->location_marker) {
             if ($this->event?->location_marker_path) {
@@ -267,6 +284,7 @@ class Form extends Component
             }
             $this->location_image_path = $this->location_image->store('invites', 'public');
         }
+
         // uploads + delete old
         if ($this->hero_video) {
             if ($this->event?->hero_video_path) Storage::disk('public')->delete($this->event->hero_video_path);
@@ -313,10 +331,8 @@ class Form extends Component
             'map_image_path' => $this->map_image_path,
             'footer_logo_path' => $this->footer_logo_path,
 
-
             'location_marker_path' => $this->location_marker_path,
             'location_image_path'  => $this->location_image_path,
-
 
             'content' => $this->content,
             'style' => $this->style,
@@ -339,60 +355,75 @@ class Form extends Component
         return $this->event?->invite_url;
     }
 
-    private function defaultContent(string $template): array
+    private function whiteStyle(): array
     {
-        return match ($template) {
-            'kids' => [
-                'intro_title' => 'ROĐENDANSKA POZIVNICA',
-                'intro_text' => 'Dođite da se igramo i slavimo!',
-                'rsvp_title' => 'Potvrdite dolazak',
-                'rsvp_subtitle' => 'Molimo odgovorite do (unesi datum)',
-                'footer_by' => 'INVITATIONS BY',
-                'footer_brand' => 'VAŠ BRAND',
+        return [
+            'intro' => [
+                'bg' => '#ffffff',
+                'title_color' => '#111827',
+                'text_color' => '#374151',
+                'line_color' => '#e5e7eb',
             ],
-            'celebration' => [
-                'intro_title' => 'OBITELJ PRODAN',
-                'intro_text' => 'Poziva vas da zajedno s nama proslavite...',
-                'rsvp_title' => 'Molimo potvrdite vaš dolazak',
-                'rsvp_subtitle' => 'Pozivnica vrijedi za dvoje',
-                'footer_by' => 'INVITATIONS BY',
-                'footer_brand' => 'VAŠ STUDIO',
+            'date' => [
+                'bg' => '#ffffff',
+                'text_primary' => '#111827',
+                'text_secondary' => '#6b7280',
+                'lines' => '#e5e7eb',
             ],
-            default => [
-                'intro_title' => 'POZIVNICA',
-                'intro_text' => 'Pozivamo vas da budete deo našeg posebnog dana.',
-                'rsvp_title' => 'Molimo potvrdite vaš dolazak',
-                'rsvp_subtitle' => 'Pozivnica važi za dvoje',
-                'footer_by' => 'INVITATIONS BY',
-                'footer_brand' => 'VAŠ BRAND',
+            'location' => [
+                'bg' => '#ffffff',
+                'text' => '#111827',
+                'sub_text' => '#6b7280',
             ],
-        };
+            'rsvp' => [
+                'bg' => '#ffffff',
+                'title_color' => '#111827',
+                'subtitle_color' => '#6b7280',
+                'third_color' => '#6b7280',
+                'card_bg' => '#ffffff',
+                'card_border' => '#e5e7eb',
+                'label_color' => '#111827',
+                'input_bg' => '#ffffff',
+                'input_border' => '#d1d5db',
+                'input_text' => '#111827',
+                'radio_accent' => '#111827',
+                'radio_border' => '#d1d5db',
+                'button_bg' => '#111827',
+                'button_text' => '#ffffff',
+            ],
+        ];
     }
 
-    private function defaultStyle(string $template): array
+    private function applyStyleToProps(array $style): void
     {
-        return match ($template) {
-            'kids' => [
-                'intro' => ['bg' => '#FFE7A3', 'title_color' => '#2F2A24', 'text_color' => '#2F2A24', 'line_color' => '#2F2A24'],
-                'date' => ['bg' => '#7CC6FF', 'text_color' => '#0B1B2B', 'line_color' => '#0B1B2B'],
-                'rsvp' => ['bg' => '#7CC6FF', 'card_bg' => '#FFF3CC', 'button_bg' => '#FF6B6B', 'button_text' => '#FFFFFF'],
-            ],
-            default => [
-                'intro' => ['bg' => '#D8CDBD', 'title_color' => '#3C3A36', 'text_color' => '#FFFFFF', 'line_color' => '#3C3A36'],
-                'date' => ['bg' => '#6F7C72', 'text_color' => '#FFFFFF', 'line_color' => '#FFFFFF'],
-                'location' => ['bg' => '#D8CDBD', 'text_color' => '#3C3A36', 'icon_color' => '#6F7C72'],
-                'rsvp' => [
-                    'bg' => '#6F7C72',
-                    'title_color' => '#FFFFFF',
-                    'subtitle_color' => '#FFFFFF',
-                    'card_bg' => '#D8CDBD',
-                    'input_bg' => '#FFFFFF',
-                    'input_border' => '#CFC6B7',
-                    'button_bg' => '#6F7C72',
-                    'button_text' => '#FFFFFF',
-                ],
-            ],
-        };
+        $this->location_bg = data_get($style, 'location.bg', '#ffffff');
+        $this->location_text = data_get($style, 'location.text', '#111827');
+        $this->location_sub_text = data_get($style, 'location.sub_text', '#6b7280');
+
+        $this->date_bg = data_get($style, 'date.bg', '#ffffff');
+        $this->date_text_primary = data_get($style, 'date.text_primary', '#111827');
+        $this->date_text_secondary = data_get($style, 'date.text_secondary', '#6b7280');
+        $this->date_lines = data_get($style, 'date.lines', '#e5e7eb');
+
+        $this->rsvp_bg = data_get($style, 'rsvp.bg', '#ffffff');
+        $this->rsvp_title_color = data_get($style, 'rsvp.title_color', '#111827');
+        $this->rsvp_subtitle_color = data_get($style, 'rsvp.subtitle_color', '#6b7280');
+        $this->rsvp_third_color = data_get($style, 'rsvp.third_color', '#6b7280');
+
+        $this->rsvp_card_bg = data_get($style, 'rsvp.card_bg', '#ffffff');
+        $this->rsvp_card_border = data_get($style, 'rsvp.card_border', '#e5e7eb');
+
+        $this->rsvp_label_color = data_get($style, 'rsvp.label_color', '#111827');
+
+        $this->rsvp_input_bg = data_get($style, 'rsvp.input_bg', '#ffffff');
+        $this->rsvp_input_border = data_get($style, 'rsvp.input_border', '#d1d5db');
+        $this->rsvp_input_text = data_get($style, 'rsvp.input_text', '#111827');
+
+        $this->rsvp_radio_accent = data_get($style, 'rsvp.radio_accent', '#111827');
+        $this->rsvp_radio_border = data_get($style, 'rsvp.radio_border', '#d1d5db');
+
+        $this->rsvp_button_bg = data_get($style, 'rsvp.button_bg', '#111827');
+        $this->rsvp_button_text = data_get($style, 'rsvp.button_text', '#ffffff');
     }
 
     public function render()

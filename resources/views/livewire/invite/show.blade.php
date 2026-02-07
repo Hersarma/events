@@ -2,23 +2,69 @@
 <div
     x-data="{
         opened: false,
-        lock() { document.documentElement.classList.add('overflow-hidden'); },
-        unlock() { document.documentElement.classList.remove('overflow-hidden'); },
+        requiresClick: @js($event->hero_type === 'video' && (bool) $event->hero_video_path),
+
+        lock() {
+            document.documentElement.classList.add('overflow-hidden');
+        },
+
+        unlock() {
+            document.documentElement.classList.remove('overflow-hidden');
+        },
+
         open() {
             this.opened = true;
             this.unlock();
 
             const v = document.getElementById('inviteVideo');
             if (v) {
-                // sigurnije za mobilne: prvo play dok je muted, pa onda opcionalno unmute
                 const p = v.play();
                 if (p && p.catch) p.catch(() => {});
             }
+
+            // 👇 OVDE se aktivira animacija teksta
+            this.$nextTick(() => this.revealTextInit());
         },
+
+        revealTextInit() {
+            const els = document.querySelectorAll('[data-reveal-text]');
+
+            if (!('IntersectionObserver' in window)) {
+                els.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: '0px 0px -10% 0px'
+            });
+
+            els.forEach(el => io.observe(el));
+        },
+
+        init() {
+            if (this.requiresClick) {
+                this.lock();
+                this.opened = false;
+            } else {
+                // 👇 ako je SLIKA – odmah otključaj + animiraj
+                this.unlock();
+                this.opened = true;
+                this.$nextTick(() => this.revealTextInit());
+            }
+        }
     }"
-    x-init="lock()"
+    x-init="init()"
     class="min-h-screen scroll-smooth bg-white"
 >
+
 
     @php
         $c = (array) ($event->content ?? []);
@@ -48,6 +94,8 @@
         $rsvpBg         = data_get($s, 'rsvp.bg', '#6F7C72');
         $rsvpTitleColor = data_get($s, 'rsvp.title_color', '#FFFFFF');
         $rsvpSubColor   = data_get($s, 'rsvp.subtitle_color', '#FFFFFF');
+        $rsvpThirdText  = data_get($c, 'rsvp_third', '');
+        $rsvpThirdColor = data_get($s, 'rsvp.third_color', '#FFFFFF');
 
         $rsvpCardBg     = data_get($s, 'rsvp.card_bg', '#D8CDBD');
         $rsvpCardBorder = data_get($s, 'rsvp.card_border', 'rgba(255,255,255,0.15)');
@@ -88,14 +136,14 @@
         @endif
 
         {{-- klik bilo gde: otključaj skrol + (ponovo) pusti video --}}
-        <div x-show="!opened" class="absolute inset-0">
-            <button
-                type="button"
-                class="absolute inset-0 cursor-pointer"
-                aria-label="Otvori pozivnicu"
-                @click="open()"
-            ></button>
-        </div>
+        <div x-show="requiresClick && !opened" class="absolute inset-0">
+    <button
+        type="button"
+        class="absolute inset-0 cursor-pointer"
+        aria-label="Otvori pozivnicu"
+        @click="open()"
+    ></button>
+</div>
     </section>
 
     {{-- CONTENT: tek nakon klika --}}
@@ -119,7 +167,7 @@
                     @endif
 
                     @if($introTextText)
-                        <p class="px-6 sm:px-12 text-base leading-7" style="color: {{ $introText }};">
+                        <p  class="px-6 sm:px-12 text-base leading-7" style="color: {{ $introText }};">
                             {{ $introTextText }}
                         </p>
                     @endif
@@ -138,105 +186,121 @@
     @endphp
 
     <section style="background: {{ $dateBg }};">
-        <div class="mx-auto max-w-5xl px-6 py-10">
-            <div class="grid grid-cols-3 items-center gap-4 text-center">
-
-                {{-- LEFT: DAN (linija / tekst / linija) --}}
-                <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-                    <div class="uppercase tracking-widest text-xs" style="color: {{ $dateTextSecondary }};">
-                        {{ $dayName }}
-                    </div>
-                    <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-                </div>
-
-                {{-- CENTER --}}
-                <div class="space-y-1">
-                    <div class="uppercase tracking-widest text-xs" style="color: {{ $dateTextSecondary }};">
-                        {{ $monthName }}
-                    </div>
-
-                    <div class="text-6xl font-semibold leading-none" style="color: {{ $dateTextPrimary }};">
-                        {{ (int) $dayNum }}
-                    </div>
-
-                    <div class="text-sm" style="color: {{ $dateTextSecondary }};">
-                        {{ $year }}
-                    </div>
-                </div>
-
-                {{-- RIGHT: SAT (linija / tekst / linija) --}}
-                <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-                    <div class="text-sm" style="color: {{ $dateTextPrimary }};">
-                        {{ $time }}
-                    </div>
-                    <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-                </div>
-
-            </div>
+  <div class="mx-auto max-w-5xl px-6 py-10">
+    <div class="flex items-center justify-center gap-3 text-center">
+      
+      {{-- LEFT --}}
+      <div class="flex flex-col items-center justify-center gap-2 -mr-12">
+        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+        <div class="uppercase tracking-widest" style="color: {{ $dateTextSecondary }};">
+          {{ $dayName }}
         </div>
-    </section>
+        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+      </div>
+
+      {{-- CENTER --}}
+      <div class="w-40 space-y-1">
+        <div class="uppercase tracking-widest pb-2" style="color: {{ $dateTextSecondary }};">
+          {{ $monthName }}
+        </div>
+
+        <div class="text-4xl font-semibold leading-none" style="color: {{ $dateTextPrimary }};">
+          {{ (int) $dayNum }}
+        </div>
+
+        <div class="pt-2" style="color: {{ $dateTextSecondary }};">
+          {{ $year }}
+        </div>
+      </div>
+
+      {{-- RIGHT --}}
+      <div class="flex flex-col items-center justify-center gap-2 -ml-12">
+        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+        <div class="" style="color: {{ $dateTextPrimary }};">
+          {{ $time }}
+        </div>
+        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
 @endif
 
 
 
-       {{-- LOCATION --}}
-<section style="background: {{ $locationBg }};">
-    <div class="mx-auto max-w-5xl py-10">
-        <div class="text-center space-y-4">
+      {{-- LOCATION (marker + naziv + adresa | mapa klikabilna) --}}
+<section class="w-full">
 
-            {{-- marker PNG --}}
-            @if($event->location_marker_path)
+    @php
+        $h = 'h-[150px]'; // ista visina za obe strane
+    @endphp
+
+    <div class="grid grid-cols-1 md:grid-cols-2">
+
+        {{-- LEVO: MARKER + TEKST --}}
+        <div
+            class="{{ $h }} flex items-center justify-center text-center px-6"
+            style="background: {{ $locationBg }};"
+        >
+            <div class="space-y-4">
+
+                {{-- MARKER (static image) --}}
                 <img
-                    src="{{ asset('storage/'.$event->location_marker_path) }}"
-                    alt="Marker"
-                    class="mx-auto h-10 w-10 object-contain"
+                    src="{{ asset('images/location-pin.png') }}"
+                    alt="Lokacija"
+                    class="mx-auto h-12 w-12 object-contain opacity-90"
                 />
-            @endif
 
-            {{-- tekst --}}
-            @if($event->location_name || $event->location_address)
-                <div class="space-y-1">
-                    @if($event->location_name)
-                        <div class="text-base font-semibold" style="color: {{ $locationText }};">
-                            {{ $event->location_name }}
+                {{-- ADRESA U JEDNOJ LINIJI: ULICA → GRAD --}}
+                    @if($event->location_address || $event->location_name)
+                        <div
+                            class="uppercase tracking-[0.35em] text-[11px] sm:text-xs"
+                            style="color: {{ $locationText }};"
+                        >
+                            {{ collect([$event->location_address, $event->location_name])
+                                ->filter()
+                                ->implode(', ') }}
                         </div>
                     @endif
 
-                    @if($event->location_address)
-                        <div class="text-sm" style="color: {{ $locationSubText }};">
-                            {{ $event->location_address }}
-                        </div>
-                    @endif
-                </div>
-            @endif
 
-            {{-- dugme mapa (opciono) --}}
-            @if($event->location_url)
-                <a
-                    href="{{ $event->location_url }}"
-                    target="_blank"
-                    class="inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-semibold"
-                    style="background: {{ $btnBg }}; color: {{ $btnText }};"
-                >
-                    Otvori mapu
-                </a>
-            @endif
+
+            </div>
         </div>
 
-        {{-- slika ispod teksta --}}
-        @if($event->location_image_path)
-            <div class="mt-8 overflow-hidden">
+        {{-- DESNO: MAPA (KLIK → GOOGLE MAPS) --}}
+        @if($event->map_image_path && $event->location_url)
+            <a
+                href="{{ $event->location_url }}"
+                target="_blank"
+                class="{{ $h }} block overflow-hidden group relative"
+            >
                 <img
-                    src="{{ asset('storage/'.$event->location_image_path) }}"
-                    alt="Lokacija"
-                    class="w-full object-cover"
+                    src="{{ asset('storage/'.$event->map_image_path) }}"
+                    alt="Mapa"
+                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+
+                {{-- diskretan overlay na hover --}}
+                <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </a>
+        @elseif($event->map_image_path)
+            <div class="{{ $h }} overflow-hidden">
+                <img
+                    src="{{ asset('storage/'.$event->map_image_path) }}"
+                    alt="Mapa"
+                    class="h-full w-full object-cover"
                 />
             </div>
         @endif
+
     </div>
 </section>
+
+
 
 
 
@@ -250,8 +314,13 @@
             </h2>
 
             @if($rsvpSubText)
-                <p class="uppercase tracking-[0.25em] text-xs" style="color: {{ $rsvpSubColor }};">
+                <p class="uppercase tracking-[0.25em] text-xs pb-5" style="color: {{ $rsvpSubColor }};">
                     {{ $rsvpSubText }}
+                </p>
+            @endif
+            @if($rsvpThirdText)
+                <p class="uppercase tracking-[0.25em] text-xs" style="color: {{ $rsvpThirdColor }};">
+                    {{ $rsvpThirdText }}
                 </p>
             @endif
         </div>
@@ -339,4 +408,17 @@
     </div>
 </section>
     </div>
+    <style>
+  .reveal-text {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .6s ease, transform .6s ease;
+    will-change: opacity, transform;
+  }
+
+  .reveal-text.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
 </div>

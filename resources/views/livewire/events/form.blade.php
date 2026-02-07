@@ -7,7 +7,7 @@
                 {{ $event ? 'Izmena događaja' : 'Kreiranje događaja' }}
             </h1>
             <p class="text-sm text-gray-600 mt-1">
-                MP4/hero + podešavanja pozivnice + RSVP
+                Editor prati redosled pozivnice: Hero → Intro → Datum → Lokacija → RSVP → Footer
             </p>
         </div>
 
@@ -37,7 +37,7 @@
 
     <form wire:submit.prevent="save" class="mt-6 space-y-6">
 
-        {{-- Osnovno --}}
+        {{-- 0) OSNOVNE INFORMACIJE (meta događaja) --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
             <div class="flex items-center justify-between">
                 <div class="font-semibold">Osnovne informacije</div>
@@ -51,25 +51,12 @@
                     <label class="text-sm font-medium text-gray-700">Šablon</label>
                     <select wire:model.live="template"
                             class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 bg-white outline-none focus:ring-2 focus:ring-gray-200">
-                        <option value="wedding">Svadba</option>
-                        <option value="kids">Dečiji rođendan</option>
                         <option value="celebration">Proslava / godišnjica</option>
                     </select>
                     @error('template') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     @if(!$event)
                         <p class="mt-1 text-xs text-gray-500">Kod novog događaja, promena šablona menja i podrazumevani tekst/boje.</p>
                     @endif
-                </div>
-
-                <div>
-                    <label class="text-sm font-medium text-gray-700">Jezik</label>
-                    <select wire:model.defer="language"
-                            class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 bg-white outline-none focus:ring-2 focus:ring-gray-200">
-                        <option value="sr">Srpski</option>
-                        <option value="hr">Hrvatski</option>
-                        <option value="en">Engleski</option>
-                    </select>
-                    @error('language') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="sm:col-span-2">
@@ -83,6 +70,7 @@
                     </div>
                 </div>
 
+                {{-- DATE (data) --}}
                 <div>
                     <label class="text-sm font-medium text-gray-700">Datum i vreme</label>
                     <input type="datetime-local" wire:model.defer="date_at"
@@ -90,6 +78,7 @@
                     @error('date_at') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
+                {{-- RSVP email (data) --}}
                 <div>
                     <label class="text-sm font-medium text-gray-700">RSVP email (prima potvrde)</label>
                     <input wire:model.defer="rsvp_email"
@@ -97,8 +86,9 @@
                     @error('rsvp_email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
+                {{-- LOCATION (data) --}}
                 <div>
-                    <label class="text-sm font-medium text-gray-700">Naziv lokacije</label>
+                    <label class="text-sm font-medium text-gray-700">Mesto</label>
                     <input wire:model.defer="location_name"
                            class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                     @error('location_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
@@ -119,137 +109,12 @@
                 </div>
             </div>
         </div>
-        <div class="rounded-2xl border border-gray-200 p-4 space-y-4">
-    <h3 class="font-semibold">Date sekcija – stil</h3>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-        {{-- Background --}}
-        <div>
-            <label class="text-xs uppercase">Pozadina</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="date_bg" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="date_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Primary text --}}
-        <div>
-            <label class="text-xs uppercase">Glavni tekst</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="date_text_primary" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="date_text_primary" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Secondary text --}}
-        <div>
-            <label class="text-xs uppercase">Sekundarni tekst</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="date_text_secondary" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="date_text_secondary" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Lines --}}
-        <div>
-            <label class="text-xs uppercase">Linije</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="date_lines" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="date_lines" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-    </div>
-</div>
-
-        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
-    <div class="font-semibold">Lokacija (stil + slike)</div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {{-- BG --}}
-        <div>
-            <label class="text-sm font-medium text-gray-700">Pozadina</label>
-            <div class="mt-2 flex items-center gap-3">
-                <input type="color" wire:model.defer="location_bg" class="h-10 w-14 rounded-lg border border-gray-200" />
-                <input wire:model.defer="location_bg" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
-            </div>
-        </div>
-
-        {{-- Text --}}
-        <div>
-            <label class="text-sm font-medium text-gray-700">Boja teksta (naziv)</label>
-            <div class="mt-2 flex items-center gap-3">
-                <input type="color" wire:model.defer="location_text" class="h-10 w-14 rounded-lg border border-gray-200" />
-                <input wire:model.defer="location_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
-            </div>
-        </div>
-
-        {{-- Sub text --}}
-        <div>
-            <label class="text-sm font-medium text-gray-700">Boja teksta (adresa)</label>
-            <div class="mt-2 flex items-center gap-3">
-                <input type="color" wire:model.defer="location_sub_text" class="h-10 w-14 rounded-lg border border-gray-200" />
-                <input wire:model.defer="location_sub_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
-            </div>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-        {{-- Marker PNG --}}
-        <div>
-            <label class="text-sm font-medium text-gray-700">Marker ikonica (PNG)</label>
-            <input type="file" accept="image/png" wire:model="location_marker"
-                   class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
-            @error('location_marker') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-
-            @if($location_marker_path)
-                <div class="mt-3">
-                    <img src="{{ asset('storage/'.$location_marker_path) }}" class="h-12 w-12 object-contain" alt="Marker preview">
-                </div>
-            @endif
-        </div>
-
-        {{-- Location image --}}
-        <div>
-            <label class="text-sm font-medium text-gray-700">Slika lokacije (ispod teksta)</label>
-            <input type="file" accept="image/*" wire:model="location_image"
-                   class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
-            @error('location_image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-
-            @if($location_image_path)
-                <div class="mt-3 overflow-hidden rounded-2xl border border-gray-200">
-                    <img src="{{ asset('storage/'.$location_image_path) }}" class="w-full object-cover" alt="Location preview">
-                </div>
-            @endif
-        </div>
-    </div>
-</div>
-
-        {{-- Status --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                <label class="text-sm font-medium text-gray-700">Aktivan</label>
-                <div class="mt-3 flex items-center gap-3">
-                    <input type="checkbox" wire:model.defer="is_active" class="h-5 w-5 rounded border-gray-300" />
-                    <span class="text-sm text-gray-700">Događaj je dostupan preko linka</span>
-                </div>
-                @error('is_active') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                <label class="text-sm font-medium text-gray-700">Ističe (opciono)</label>
-                <input type="datetime-local" wire:model.defer="expires_at"
-                       class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
-                @error('expires_at') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-        </div>
-
-        {{-- HERO --}}
+        {{-- 1) HERO --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <div class="font-semibold">Hero (vrh pozivnice)</div>
+                    <div class="font-semibold">1) Hero (vrh pozivnice)</div>
                     <div class="text-sm text-gray-600">Video ili slika koja ide preko celog ekrana na vrhu.</div>
                 </div>
                 <div class="text-sm text-gray-500">
@@ -312,7 +177,306 @@
             </div>
         </div>
 
-        {{-- MAPA I FOOTER --}}
+        {{-- 2) INTRO (content + intro boje) --}}
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
+            <div class="font-semibold">2) Intro (uvodni tekst)</div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Naslov uvoda</label>
+                    <input wire:model.defer="content.intro_title"
+                           class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Footer: naziv brenda</label>
+                    <input wire:model.defer="content.footer_brand"
+                           class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="text-sm font-medium text-gray-700">Uvodni tekst</label>
+                    <textarea wire:model.defer="content.intro_text" rows="4"
+                              class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"></textarea>
+                </div>
+            </div>
+
+            {{-- INTRO stil (iz tvog “Boje” bloka) --}}
+            <div class="rounded-2xl border border-gray-200 p-4">
+                <div class="font-semibold mb-3">Intro – stil</div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <label class="w-36 text-sm text-gray-700">Pozadina</label>
+                        <input type="color" wire:model.defer="style.intro.bg" class="h-10 w-14 rounded-lg border border-gray-200" />
+                        <input wire:model.defer="style.intro.bg" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <label class="w-36 text-sm text-gray-700">Naslov</label>
+                        <input type="color" wire:model.defer="style.intro.title_color" class="h-10 w-14 rounded-lg border border-gray-200" />
+                        <input wire:model.defer="style.intro.title_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <label class="w-36 text-sm text-gray-700">Tekst</label>
+                        <input type="color" wire:model.defer="style.intro.text_color" class="h-10 w-14 rounded-lg border border-gray-200" />
+                        <input wire:model.defer="style.intro.text_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- 3) DATE (stil) --}}
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
+            <div class="font-semibold">3) Date sekcija – stil</div>
+
+            {{-- tvoj ceo date stil blok --}}
+            <div class="rounded-2xl border border-gray-200 p-4 space-y-4">
+                <h3 class="font-semibold">Date sekcija – stil</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs uppercase">Pozadina</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="date_bg" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="date_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Glavni tekst</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="date_text_primary" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="date_text_primary" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Sekundarni tekst</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="date_text_secondary" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="date_text_secondary" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Linije</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="date_lines" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="date_lines" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- 4) LOCATION (stil + slike) --}}
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
+            <div class="font-semibold">4) Lokacija (stil + slike)</div>
+
+            {{-- tvoj ceo location stil + slike blok --}}
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
+                <div class="font-semibold">Lokacija (stil + slike)</div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Pozadina</label>
+                        <div class="mt-2 flex items-center gap-3">
+                            <input type="color" wire:model.defer="location_bg" class="h-10 w-14 rounded-lg border border-gray-200" />
+                            <input wire:model.defer="location_bg" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Boja teksta (naziv)</label>
+                        <div class="mt-2 flex items-center gap-3">
+                            <input type="color" wire:model.defer="location_text" class="h-10 w-14 rounded-lg border border-gray-200" />
+                            <input wire:model.defer="location_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Boja teksta (adresa)</label>
+                        <div class="mt-2 flex items-center gap-3">
+                            <input type="color" wire:model.defer="location_sub_text" class="h-10 w-14 rounded-lg border border-gray-200" />
+                            <input wire:model.defer="location_sub_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Marker ikonica (PNG)</label>
+                        <input type="file" accept="image/png" wire:model="location_marker"
+                               class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
+                        @error('location_marker') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+
+                        @if($location_marker_path)
+                            <div class="mt-3">
+                                <img src="{{ asset('storage/'.$location_marker_path) }}" class="h-12 w-12 object-contain" alt="Marker preview">
+                            </div>
+                        @endif
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Slika lokacije (ispod teksta)</label>
+                        <input type="file" accept="image/*" wire:model="location_image"
+                               class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
+                        @error('location_image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+
+                        @if($location_image_path)
+                            <div class="mt-3 overflow-hidden rounded-2xl border border-gray-200">
+                                <img src="{{ asset('storage/'.$location_image_path) }}" class="w-full object-cover" alt="Location preview">
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- 5) RSVP (tekst + stil) --}}
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
+            <div class="font-semibold">5) RSVP (tekst + stil)</div>
+
+            {{-- RSVP tekstovi (iz tvog “Tekstovi” bloka) --}}
+            <div class="space-y-4">
+    <div>
+        <label class="text-sm font-medium text-gray-700">RSVP tekst 1</label>
+        <input wire:model.defer="content.rsvp_title"
+               class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
+    </div>
+
+    <div>
+        <label class="text-sm font-medium text-gray-700">RSVP tekst 2</label>
+        <input wire:model.defer="content.rsvp_subtitle"
+               class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
+    </div>
+
+    <div>
+        <label class="text-sm font-medium text-gray-700">RSVP tekst 3</label>
+        <input wire:model.defer="content.rsvp_third"
+               class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
+    </div>
+</div>
+
+            {{-- RSVP radio + boje (tvoj blok) --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs uppercase">Boja teksta (radio)</label>
+                    <div class="mt-1 flex gap-2">
+                        <input type="color" wire:model.live="rsvp_radio_label" class="h-10 w-12">
+                        <input type="text" wire:model.live="rsvp_radio_label" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs uppercase">Boja radio dugmeta</label>
+                    <div class="mt-1 flex gap-2">
+                        <input type="color" wire:model.live="rsvp_radio_accent" class="h-10 w-12">
+                        <input type="text" wire:model.live="rsvp_radio_accent" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                    </div>
+                </div>
+            </div>
+
+            {{-- RSVP stil (tvoj veliki RSVP stil blok) --}}
+            <div class="rounded-2xl border border-gray-200 p-4 space-y-4">
+                <h3 class="font-semibold">RSVP sekcija – stil</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs uppercase">Pozadina sekcije</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_bg" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Pozadina kartice</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_card_bg" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_card_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">RSVP Naslov</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_title_color" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_title_color" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">RSVP Podnaslov</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_subtitle_color" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_subtitle_color" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">RSVP Treći tekst</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_third_color" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_third_color" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <label class="text-xs uppercase">Label (tekst)</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_label_color" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_label_color" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Input pozadina</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_input_bg" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_input_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Input border</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_input_border" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_input_border" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Input tekst</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_input_text" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_input_text" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Dugme pozadina</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_button_bg" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_button_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs uppercase">Dugme tekst</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="color" wire:model.live="rsvp_button_text" class="h-10 w-12 rounded border p-1">
+                            <input type="text" wire:model.live="rsvp_button_text" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- 6) MAPA + FOOTER LOGO (opciono) --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-3">
                 <div class="font-semibold">Slika mape (opciono)</div>
@@ -349,207 +513,33 @@
             </div>
         </div>
 
-        {{-- TEKSTOVI (CONTENT JSON) --}}
-        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
-            <div>
-                <div class="font-semibold">Tekstovi na stranici</div>
-                <p class="text-sm text-gray-600">Ovo su promenljivi delovi koje klijent menja.</p>
+        {{-- 7) STATUS --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                <label class="text-sm font-medium text-gray-700">Aktivan</label>
+                <div class="mt-3 flex items-center gap-3">
+                    <input type="checkbox" wire:model.defer="is_active" class="h-5 w-5 rounded border-gray-300" />
+                    <span class="text-sm text-gray-700">Događaj je dostupan preko linka</span>
+                </div>
+                @error('is_active') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-sm font-medium text-gray-700">Naslov uvoda</label>
-                    <input wire:model.defer="content.intro_title"
-                           class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
-                </div>
-
-                <div>
-                    <label class="text-sm font-medium text-gray-700">Footer: naziv brenda</label>
-                    <input wire:model.defer="content.footer_brand"
-                           class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label class="text-sm font-medium text-gray-700">Uvodni tekst</label>
-                    <textarea wire:model.defer="content.intro_text" rows="4"
-                              class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"></textarea>
-                </div>
-
-                <div>
-                    <label class="text-sm font-medium text-gray-700">RSVP naslov</label>
-                    <input wire:model.defer="content.rsvp_title"
-                           class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
-                </div>
-
-                <div>
-                    <label class="text-sm font-medium text-gray-700">RSVP podnaslov</label>
-                    <input wire:model.defer="content.rsvp_subtitle"
-                           class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
-                </div>
-                <h3 class="font-semibold">RSVP – radio dugmići</h3>
-
-    <div>
-        <label class="text-xs uppercase">Boja teksta (radio)</label>
-        <div class="mt-1 flex gap-2">
-            <input type="color" wire:model.live="rsvp_radio_label" class="h-10 w-12">
-            <input type="text" wire:model.live="rsvp_radio_label" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-        </div>
-    </div>
-
-    <div>
-        <label class="text-xs uppercase">Boja radio dugmeta</label>
-        <div class="mt-1 flex gap-2">
-            <input type="color" wire:model.live="rsvp_radio_accent" class="h-10 w-12">
-            <input type="text" wire:model.live="rsvp_radio_accent" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-        </div>
-    </div>
+            <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                <label class="text-sm font-medium text-gray-700">Ističe (opciono)</label>
+                <input type="datetime-local" wire:model.defer="expires_at"
+                       class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
+                @error('expires_at') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>
 
-        {{-- BOJE (STYLE JSON) --}}
+        {{-- 8) BOJE / STYLE JSON (ako želiš da ostane i “centralno”) --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
             <div>
                 <div class="font-semibold">Boje (stil)</div>
-                <p class="text-sm text-gray-600">Boje su vezane za sekcije (intro, datum, lokacija, RSVP).</p>
+                <p class="text-sm text-gray-600">Ovo je “centralno” mesto – većina stilova je gore po sekcijama, ali može da ostane i ovde za pregled.</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {{-- Intro --}}
-                <div class="rounded-2xl border border-gray-200 p-4">
-                    <div class="font-semibold mb-3">Uvod</div>
-
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-3">
-                            <label class="w-36 text-sm text-gray-700">Pozadina</label>
-                            <input type="color" wire:model.defer="style.intro.bg" class="h-10 w-14 rounded-lg border border-gray-200" />
-                            <input wire:model.defer="style.intro.bg" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <label class="w-36 text-sm text-gray-700">Naslov</label>
-                            <input type="color" wire:model.defer="style.intro.title_color" class="h-10 w-14 rounded-lg border border-gray-200" />
-                            <input wire:model.defer="style.intro.title_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <label class="w-36 text-sm text-gray-700">Tekst</label>
-                            <input type="color" wire:model.defer="style.intro.text_color" class="h-10 w-14 rounded-lg border border-gray-200" />
-                            <input wire:model.defer="style.intro.text_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
-                        </div>
-                    </div>
-                </div>
-
-                {{-- RSVP --}}
-                <div class="rounded-2xl border border-gray-200 p-4 space-y-4">
-    <h3 class="font-semibold">RSVP sekcija – stil</h3>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {{-- BG --}}
-        <div>
-            <label class="text-xs uppercase">Pozadina sekcije</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_bg" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Card BG --}}
-        <div>
-            <label class="text-xs uppercase">Pozadina kartice</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_card_bg" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_card_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Title --}}
-        <div>
-            <label class="text-xs uppercase">Naslov</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_title_color" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_title_color" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Subtitle --}}
-        <div>
-            <label class="text-xs uppercase">Podnaslov</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_subtitle_color" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_subtitle_color" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Labels --}}
-        <div>
-            <label class="text-xs uppercase">Label (tekst)</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_label_color" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_label_color" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Input BG --}}
-        <div>
-            <label class="text-xs uppercase">Input pozadina</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_input_bg" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_input_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Input border --}}
-        <div>
-            <label class="text-xs uppercase">Input border</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_input_border" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_input_border" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Input text --}}
-        <div>
-            <label class="text-xs uppercase">Input tekst</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_input_text" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_input_text" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Radio accent --}}
-        <div>
-            <label class="text-xs uppercase">Radio tačkica (accent)</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_radio_accent" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_radio_accent" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Button bg --}}
-        <div>
-            <label class="text-xs uppercase">Dugme pozadina</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_button_bg" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_button_bg" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-
-        {{-- Button text --}}
-        <div>
-            <label class="text-xs uppercase">Dugme tekst</label>
-            <div class="mt-1 flex gap-2">
-                <input type="color" wire:model.live="rsvp_button_text" class="h-10 w-12 rounded border p-1">
-                <input type="text" wire:model.live="rsvp_button_text" class="h-10 w-full rounded-lg border px-3 text-sm uppercase">
-            </div>
-        </div>
-    </div>
-</div>
-
-            </div>
-
-            <p class="text-xs text-gray-500">
-                Ako želiš, možemo dodati i boje za “Datum” i “Lokaciju” identično kao gore (samo proširimo style JSON).
-            </p>
+            {{-- ovde možeš kasnije da dodaš još “date/location” stil u style JSON ako bude trebalo --}}
         </div>
 
         {{-- Akcije --}}
