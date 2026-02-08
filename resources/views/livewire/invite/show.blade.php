@@ -397,7 +397,7 @@
 
         
         {{-- Footer --}}
-<div class="mt-10 text-center space-y-2">
+<div class="mt-10 text-center">
     {{-- LOGO (uvek iz images foldera) --}}
     <img
         src="{{ asset('images/logo.png') }}"
@@ -406,7 +406,7 @@
     >
 
     {{-- FOOTER TEKST --}}
-    <p class="text-xs uppercase tracking-widest"
+    <p class="text-xs uppercase tracking-widest pt-2"
        style="color: {{ $footerTextColor }};">
         invitations by
     </p>
