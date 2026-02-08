@@ -259,7 +259,7 @@
                 {{-- ADRESA U JEDNOJ LINIJI: ULICA → GRAD --}}
                     @if($event->location_address || $event->location_name)
                         <div
-                            class="uppercase tracking-[0.35em] text-[11px] sm:text-xs"
+                            class="uppercase text-[11px] sm:text-sm"
                             style="color: {{ $locationText }};"
                         >
                             {{ collect([$event->location_address, $event->location_name])
@@ -316,12 +316,12 @@
             </h2>
 
             @if($rsvpSubText)
-                <p class="uppercase tracking-[0.25em] text-xs pb-3" style="color: {{ $rsvpSubColor }};">
+                <p class="uppercase tracking-[0.25em] text-sm" style="color: {{ $rsvpSubColor }};">
                     {{ $rsvpSubText }}
                 </p>
             @endif
             @if($rsvpThirdText)
-                <p class="uppercase tracking-[0.25em] text-xs" style="color: {{ $rsvpThirdColor }};">
+                <p class="uppercase tracking-[0.25em] text-sm" style="color: {{ $rsvpThirdColor }};">
                     {{ $rsvpThirdText }}
                 </p>
             @endif
