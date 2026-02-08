@@ -2,7 +2,7 @@
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold">Događaji</h1>
 
-        <a href="{{ route('events.create') }}"
+        <a href="{{ route('events.create') }}" wire:navigate
            class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white">
             + Novi događaj
         </a>
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <a href="{{ route('events.edit', $event) }}"
+                        <a href="{{ route('events.edit', $event) }}" wire:navigate
                            class="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold">
                             Izmeni
                         </a>

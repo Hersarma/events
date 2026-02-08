@@ -544,7 +544,7 @@
 
         {{-- Akcije --}}
         <div class="flex items-center justify-end gap-3">
-            <a href="{{ route('events.index') }}"
+            <a href="{{ route('events.index') }}" wire:navigate
                class="rounded-xl border border-gray-200 bg-white px-5 py-2 text-sm font-semibold">
                 Otkaži
             </a>
