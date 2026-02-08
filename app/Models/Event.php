@@ -30,7 +30,6 @@ class Event extends Model
         'hero_video_path',
         'hero_image_path',
         'map_image_path',
-        'footer_logo_path',
 
         'content',
         'style',

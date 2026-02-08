@@ -82,7 +82,6 @@
         $introTitleText = data_get($c, 'intro_title', '');
         $introTextText  = data_get($c, 'intro_text', '');
         
-        $footerBrand    = data_get($c, 'footer_brand', '');
         $dateBg = data_get($s, 'date.bg', '#ffffff');
         $dateTextPrimary = data_get($s, 'date.text_primary', '#111827');
         $dateTextSecondary = data_get($s, 'date.text_secondary', '#6b7280');
@@ -111,8 +110,13 @@
 
         $rsvpBtnBg   = data_get($s, 'rsvp.button_bg', '#6F7C72');
         $rsvpBtnText = data_get($s, 'rsvp.button_text', '#FFFFFF');
-        @endphp
+        $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor); // fallback
+        $footerLogo = 'images/footer-logo.png'; // public/images/footer-logo.png
+        
 
+        @endphp
+<div class="min-h-screen bg-neutral-100 lg:flex lg:items-center lg:justify-center">
+    <div class="w-full bg-white lg:w-[460px] lg:rounded-[32px] lg:overflow-hidden lg:shadow-xl">
     {{-- HERO: full screen --}}
     <section class="relative h-screen w-full overflow-hidden">
         @if($event->hero_type === 'image' && $event->hero_image_path)
@@ -127,9 +131,7 @@
                 class="h-full w-full object-cover"
                 playsinline
                 preload="metadata"
-                autoplay
                 muted
-                loop
             >
                 <source src="{{ asset('storage/'.$event->hero_video_path) }}" type="video/mp4">
             </video>
@@ -238,7 +240,7 @@
         $h = 'h-[150px]'; // ista visina za obe strane
     @endphp
 
-    <div class="grid grid-cols-1 md:grid-cols-2">
+    <div class="grid grid-cols-1">
 
         {{-- LEVO: MARKER + TEKST --}}
         <div
@@ -393,18 +395,28 @@
             </form>
         </div>
 
+        
         {{-- Footer --}}
-        <div class="mt-10 text-center space-y-3">
-            @if($event->footer_logo_path)
-                <img src="{{ asset('storage/'.$event->footer_logo_path) }}" alt="Logo" class="mx-auto max-h-16">
-            @endif
+<div class="mt-10 text-center space-y-2">
+    {{-- LOGO (uvek iz images foldera) --}}
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Logo"
+        class="mx-auto h-14 w-14 object-contain rounded-full p-2 ring-1 ring-emerald-300/20"
+    >
 
-            @if($footerBrand)
-                <p class="text-xs uppercase tracking-widest" style="color: {{ $rsvpTitleColor }};">
-                    {{ $footerBrand }}
-                </p>
-            @endif
-        </div>
+    {{-- FOOTER TEKST --}}
+    <p class="text-xs uppercase tracking-widest"
+       style="color: {{ $footerTextColor }};">
+        invitations by
+    </p>
+
+    <p class="text-xs uppercase tracking-widest"
+       style="color: {{ $footerTextColor }};">
+        dianas garden studio
+    </p>
+</div>
+
     </div>
 </section>
     </div>
@@ -421,4 +433,6 @@
     transform: translateY(0);
   }
 </style>
+</div>
+</div>
 </div>

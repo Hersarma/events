@@ -64,11 +64,13 @@ class Form extends Component
     public string $rsvp_button_bg = '#111827';
     public string $rsvp_button_text = '#ffffff';
 
+    public string $footer_text_color = '#ffffff';
+
+
     /** uploads */
     public $hero_video = null;     // mp4
     public $hero_image = null;     // jpg/png
     public $map_image  = null;     // jpg/png
-    public $footer_logo = null;    // png/svg
     public $location_marker = null; // png
     public $location_image = null;  // jpg/png/webp
 
@@ -78,7 +80,6 @@ class Form extends Component
     public ?string $hero_video_path = null;
     public ?string $hero_image_path = null;
     public ?string $map_image_path = null;
-    public ?string $footer_logo_path = null;
 
     public string $token = '';
     public string $slug = '';
@@ -115,7 +116,6 @@ class Form extends Component
             $this->hero_video_path = $event->hero_video_path;
             $this->hero_image_path = $event->hero_image_path;
             $this->map_image_path = $event->map_image_path;
-            $this->footer_logo_path = $event->footer_logo_path;
 
             $this->location_marker_path = $event->location_marker_path;
             $this->location_image_path  = $event->location_image_path;
@@ -149,6 +149,9 @@ class Form extends Component
 
             $this->rsvp_button_bg = data_get($event->style, 'rsvp.button_bg', '#111827');
             $this->rsvp_button_text = data_get($event->style, 'rsvp.button_text', '#ffffff');
+
+            $this->footer_text_color = data_get($event->style, 'footer.text_color', '#ffffff');
+
 
             // ✅ content/style iz baze (bez default teksta)
             $this->content = is_array($event->content) ? $event->content : [];
@@ -203,7 +206,6 @@ class Form extends Component
             'hero_video' => ['nullable', 'file', 'mimetypes:video/mp4', 'max:51200'],
             'hero_image' => ['nullable', 'image', 'max:10240'],
             'map_image'  => ['nullable', 'image', 'max:10240'],
-            'footer_logo'=> ['nullable', 'file', 'max:5120'],
 
             'location_bg' => ['required','string','max:20'],
             'location_text' => ['required','string','max:20'],
@@ -228,6 +230,7 @@ class Form extends Component
             'rsvp_radio_border' => ['required','string','max:30'],
             'rsvp_button_bg' => ['required','string','max:30'],
             'rsvp_button_text' => ['required','string','max:30'],
+            'footer_text_color' => ['required','string','max:30'],
 
             'location_marker' => ['nullable','image','mimes:png','max:2048'],
             'location_image' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:10240'],
@@ -268,6 +271,8 @@ class Form extends Component
 
         data_set($this->style, 'rsvp.button_bg', $this->rsvp_button_bg);
         data_set($this->style, 'rsvp.button_text', $this->rsvp_button_text);
+        data_set($this->style, 'footer.text_color', $this->footer_text_color);
+
 
         // upload marker
         if ($this->location_marker) {
@@ -301,10 +306,7 @@ class Form extends Component
             $this->map_image_path = $this->map_image->store('invites', 'public');
         }
 
-        if ($this->footer_logo) {
-            if ($this->event?->footer_logo_path) Storage::disk('public')->delete($this->event->footer_logo_path);
-            $this->footer_logo_path = $this->footer_logo->store('invites', 'public');
-        }
+        
 
         $payload = [
             'user_id' => auth()->id(),
@@ -329,7 +331,7 @@ class Form extends Component
             'hero_video_path' => $this->hero_video_path,
             'hero_image_path' => $this->hero_image_path,
             'map_image_path' => $this->map_image_path,
-            'footer_logo_path' => $this->footer_logo_path,
+            
 
             'location_marker_path' => $this->location_marker_path,
             'location_image_path'  => $this->location_image_path,
@@ -391,6 +393,9 @@ class Form extends Component
                 'button_bg' => '#111827',
                 'button_text' => '#ffffff',
             ],
+            'footer' => [
+                'text_color' => '#ffffff',
+            ],
         ];
     }
 
@@ -424,7 +429,46 @@ class Form extends Component
 
         $this->rsvp_button_bg = data_get($style, 'rsvp.button_bg', '#111827');
         $this->rsvp_button_text = data_get($style, 'rsvp.button_text', '#ffffff');
+        $this->footer_text_color = data_get($style, 'footer.text_color', '#ffffff');
+
     }
+
+    public function removeHeroVideo(): void
+{
+    if (! $this->event) return;
+
+    if ($this->event->hero_video_path) {
+        Storage::disk('public')->delete($this->event->hero_video_path);
+    }
+
+    $this->hero_video = null;
+    $this->hero_video_path = null;
+
+    $this->event->update([
+        'hero_video_path' => null,
+    ]);
+
+    $this->dispatch('flash', message: 'Hero video je uklonjen.', type: 'success');
+}
+
+public function removeHeroImage(): void
+{
+    if (! $this->event) return;
+
+    if ($this->event->hero_image_path) {
+        Storage::disk('public')->delete($this->event->hero_image_path);
+    }
+
+    $this->hero_image = null;
+    $this->hero_image_path = null;
+
+    $this->event->update([
+        'hero_image_path' => null,
+    ]);
+
+    $this->dispatch('flash', message: 'Hero slika je uklonjena.', type: 'success');
+}
+
 
     public function render()
     {
