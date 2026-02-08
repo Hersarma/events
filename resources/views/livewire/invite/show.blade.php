@@ -310,7 +310,7 @@
         <section style="background: {{ $rsvpBg }};">
     <div class="mx-auto max-w-5xl px-6 py-12">
         {{-- Title (kao na slici) --}}
-        <div class="text-center space-y-2">
+        <div class="text-center">
             <h2 class="uppercase tracking-[0.15em] text-sm" style="color: {{ $rsvpTitleColor }};">
                 {!! nl2br(e($rsvpTitleText)) !!}
             </h2>
