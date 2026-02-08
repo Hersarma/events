@@ -14,7 +14,8 @@ Route::get('/', function () {
 });
 
 // PUBLIC INVITE
-Route::get('/inv/{slug}-{token}', InviteShow::class)->name('invite.show');
+Route::get('/inv/{token}', InviteShow::class)->name('invite.show');
+
 
 // ADMIN
 Route::middleware(['auth'])->group(function () {

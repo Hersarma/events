@@ -53,9 +53,9 @@ class Event extends Model
     }
 
     public function getInviteUrlAttribute(): string
-    {
-        return route('invite.show', ['slug' => $this->slug, 'token' => $this->token]);
-    }
+{
+    return route('invite.show', ['token' => $this->token]);
+}
 
     public static function makeSlug(string $title): string
     {
