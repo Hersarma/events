@@ -14,8 +14,12 @@ Route::get('/', function () {
 });
 
 // PUBLIC INVITE
-Route::get('/inv/{slug}-{token}', InviteShow::class)->name('invite.show');
-
+Route::get('/inv/{slug}-{token}', InviteShow::class)
+    ->where([
+        'slug' => '.+',
+        'token' => '[A-Za-z0-9\-]+',
+    ])
+    ->name('invite.show');
 // ADMIN
 Route::middleware(['auth'])->group(function () {
     Route::get('/events', EventsIndex::class)->name('events.index');
