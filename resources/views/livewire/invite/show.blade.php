@@ -316,7 +316,7 @@
             </h2>
 
             @if($rsvpSubText)
-                <p class="uppercase tracking-[0.25em] text-xs pb-5" style="color: {{ $rsvpSubColor }};">
+                <p class="uppercase tracking-[0.25em] text-xs pb-3" style="color: {{ $rsvpSubColor }};">
                     {{ $rsvpSubText }}
                 </p>
             @endif
