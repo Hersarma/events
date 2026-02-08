@@ -22,21 +22,39 @@ class Show extends Component
 
     public bool $sent = false;
 
-    public function mount(string $slug, string $token): void
-    {
-        $event = Event::query()
-            ->where('slug', $slug)
-            ->where('token', $token)
-            ->firstOrFail();
+   public function mount(string $slug, string $token): void
+{
+    $event = Event::query()
+        ->where('slug', $slug)
+        ->where('token', $token)
+        ->first();
 
-        abort_unless($event->is_active, 404);
-
-        if ($event->expires_at && now()->greaterThan($event->expires_at)) {
-            abort(404);
-        }
-
-        $this->event = $event;
+    // ✅ samo kad dodaš ?__debug=1 na link
+    if (request()->boolean('__debug')) {
+        dd([
+            'slug' => $slug,
+            'token' => $token,
+            'found' => (bool) $event,
+            'found_by_slug' => Event::where('slug', $slug)->exists(),
+            'found_by_token' => Event::where('token', $token)->exists(),
+            'is_active' => $event?->is_active,
+            'expires_at' => optional($event?->expires_at)->toDateTimeString(),
+            'now' => now()->toDateTimeString(),
+            'expired' => $event?->expires_at ? now()->greaterThan($event->expires_at) : false,
+            'app_tz' => config('app.timezone'),
+        ]);
     }
+
+    abort_if(! $event, 404);
+    abort_unless($event->is_active, 404);
+
+    if ($event->expires_at && now()->greaterThan($event->expires_at)) {
+        abort(404);
+    }
+
+    $this->event = $event;
+}
+
 
     public function submit(): void
     {
