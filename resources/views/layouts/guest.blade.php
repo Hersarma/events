@@ -17,6 +17,7 @@
     <body class="font-sans text-gray-900 antialiased">
         <body class="bg-white text-gray-900">
             {{ $slot }}
+            <x-flash-message />
         </body>
     </body>
 </html>

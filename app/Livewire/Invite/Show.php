@@ -19,6 +19,7 @@ class Show extends Component
     public string $phone = '';
     public int $guests_count = 1;
     public string $status = 'yes'; // yes|maybe|no
+    public int $formKey = 1;
 
     public bool $sent = false;
 
@@ -58,14 +59,16 @@ class Show extends Component
             'user_agent' => request()->userAgent(),
         ]);
 
-        if ($this->event->rsvp_email) {
-            Mail::to($this->event->rsvp_email)->send(new RsvpReceived($rsvp));
-        }
+       
 
-        $this->sent = true;
+        $this->dispatch('flash',
+            message: 'Hvala! Potvrda je poslata.',
+            type: 'success'
+        );
 
         $this->reset(['name', 'email', 'phone', 'guests_count']);
         $this->guests_count = 1;
+        $this->formKey++;
     }
 
     public function render()

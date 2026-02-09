@@ -176,6 +176,11 @@
                 </div>
             </div>
         </section>
+@php
+    $h = 'h-[105px]';
+    $himg = 'h-[185px]';
+    $py = 'py-12';
+@endphp
 
         {{-- DATE ROW (dan / mesec / broj / godina / vreme) --}}
 @if($event->date_at)
@@ -187,98 +192,88 @@
         $time = $event->date_at->format('H:i');
     @endphp
 
-    <section style="background: {{ $dateBg }};">
-  <div class="mx-auto max-w-5xl px-6 py-10">
-    <div class="flex items-center justify-center gap-3 text-center">
-      
-      {{-- LEFT --}}
-      <div class="flex flex-col items-center justify-center gap-2 -mr-12">
-        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-        <div class="uppercase tracking-widest" style="color: {{ $dateTextSecondary }};">
-          {{ $dayName }}
+    <section class="w-full" style="background: {{ $dateBg }};">
+        <div class="mx-auto max-w-5xl px-6 {{ $py }}">
+            <div class="{{ $h }} flex items-center justify-center">
+                <div class="flex items-center justify-center gap-3 text-center">
+
+                    {{-- LEFT --}}
+                    <div class="flex flex-col items-center justify-center gap-2 -mr-12">
+                        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+                        <div class="uppercase tracking-widest" style="color: {{ $dateTextSecondary }};">
+                            {{ $dayName }}
+                        </div>
+                        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+                    </div>
+
+                    {{-- CENTER --}}
+                    <div class="w-40 space-y-1">
+                        <div class="uppercase tracking-widest pb-2" style="color: {{ $dateTextSecondary }};">
+                            {{ $monthName }}
+                        </div>
+
+                        <div class="text-4xl font-semibold leading-none" style="color: {{ $dateTextPrimary }};">
+                            {{ (int) $dayNum }}
+                        </div>
+
+                        <div class="pt-2" style="color: {{ $dateTextSecondary }};">
+                            {{ $year }}
+                        </div>
+                    </div>
+
+                    {{-- RIGHT --}}
+                    <div class="flex flex-col items-center justify-center gap-2 -ml-12">
+                        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+                        <div style="color: {{ $dateTextPrimary }};">
+                            {{ $time }}
+                        </div>
+                        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-      </div>
-
-      {{-- CENTER --}}
-      <div class="w-40 space-y-1">
-        <div class="uppercase tracking-widest pb-2" style="color: {{ $dateTextSecondary }};">
-          {{ $monthName }}
-        </div>
-
-        <div class="text-4xl font-semibold leading-none" style="color: {{ $dateTextPrimary }};">
-          {{ (int) $dayNum }}
-        </div>
-
-        <div class="pt-2" style="color: {{ $dateTextSecondary }};">
-          {{ $year }}
-        </div>
-      </div>
-
-      {{-- RIGHT --}}
-      <div class="flex flex-col items-center justify-center gap-2 -ml-12">
-        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-        <div class="" style="color: {{ $dateTextPrimary }};">
-          {{ $time }}
-        </div>
-        <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
+    </section>
 @endif
 
 
 
+
       {{-- LOCATION (marker + naziv + adresa | mapa klikabilna) --}}
-<section class="w-full">
-
-    @php
-        $h = 'h-[150px]'; // ista visina za obe strane
-    @endphp
-
-    <div class="grid grid-cols-1">
-
-        {{-- LEVO: MARKER + TEKST --}}
-        <div
-            class="{{ $h }} flex items-center justify-center text-center px-6"
-            style="background: {{ $locationBg }};"
-        >
+<section class="w-full" style="background: {{ $locationBg }};">
+    <div class="mx-auto max-w-5xl px-6 {{ $py }}">
+        <div class="{{ $h }} flex items-center justify-center text-center">
             <div class="space-y-4">
-
-                {{-- MARKER (static image) --}}
                 <img
                     src="{{ asset('images/location-pin.png') }}"
                     alt="Lokacija"
                     class="mx-auto h-12 w-12 object-contain opacity-90"
                 />
 
-                {{-- ADRESA U JEDNOJ LINIJI: ULICA → GRAD --}}
-                    @if($event->location_address || $event->location_name)
-                        <div
-                            class="uppercase text-[11px] tracking-[0.15em] sm:text-sm"
-                            style="color: {{ $locationText }};"
-                        >
-                            {{ collect([$event->location_address, $event->location_name])
-                                ->filter()
-                                ->implode(', ') }}
-                        </div>
-                    @endif
-
-
-
+                @if($event->location_address || $event->location_name)
+                    <div
+                        class="uppercase text-[11px] tracking-[0.15em] sm:text-sm"
+                        style="color: {{ $locationText }};"
+                    >
+                        {{ collect([$event->location_address, $event->location_name])
+                            ->filter()
+                            ->implode(', ') }}
+                    </div>
+                @endif
             </div>
         </div>
+    </div>
+</section>
+@if($event->map_image_path)
+<section class="w-full" style="background: {{ $locationBg }};">
+    
+    <div class="{{ $himg }} w-full relative overflow-hidden">
 
-        {{-- DESNO: MAPA (KLIK → GOOGLE MAPS) --}}
-        @if($event->map_image_path && $event->location_url)
+        @if($event->location_url)
             <a
                 href="{{ $event->location_url }}"
                 target="_blank"
-                class="{{ $h }} block overflow-hidden group relative"
+                class="absolute inset-0 block group"
             >
                 <img
                     src="{{ asset('storage/'.$event->map_image_path) }}"
@@ -286,21 +281,21 @@
                     class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
-                {{-- diskretan overlay na hover --}}
                 <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </a>
-        @elseif($event->map_image_path)
-            <div class="{{ $h }} overflow-hidden">
-                <img
-                    src="{{ asset('storage/'.$event->map_image_path) }}"
-                    alt="Mapa"
-                    class="h-full w-full object-cover"
-                />
-            </div>
+        @else
+            <img
+                src="{{ asset('storage/'.$event->map_image_path) }}"
+                alt="Mapa"
+                class="h-full w-full object-cover"
+            />
         @endif
 
     </div>
 </section>
+@endif
+
+
 
 
 
@@ -330,13 +325,7 @@
         {{-- Card --}}
         <div class="mx-auto mt-8 max-w-xl rounded-lg p-6 sm:p-8"
              style="background: {{ $rsvpCardBg }}; border: 1px solid {{ $rsvpCardBorder }};">
-            
-            @if($sent)
-                <div class="mb-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800 text-center">
-                    Hvala! Potvrda je poslata. ✅
-                </div>
-            @endif
-
+             <div wire:key="rsvp-form-{{ $formKey }}">
             <form wire:submit.prevent="submit" class="space-y-5">
                 {{-- Ime --}}
                 <div>
@@ -372,7 +361,7 @@
                                 type="radio"
                                 name="rsvp_status"
                                 value="{{ $k }}"
-                                wire:model.live="status"
+                                wire:model.defer="status"
                                 class="h-4 w-4"
                                 style="accent-color: {{ $rsvpRadioAccent }};"
                             >
@@ -393,6 +382,7 @@
                     </button>
                 </div>
             </form>
+        </div>
         </div>
 
         
