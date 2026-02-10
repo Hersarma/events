@@ -16,6 +16,27 @@
         >
         <source src="{{ asset('storage/'.$event->hero_video_path) }}" type="video/mp4">
     </video>
+    {{-- Scroll hint (strelica dole) --}}
+<div
+    x-show="opened"
+    x-transition.opacity
+    class="pointer-events-none absolute bottom-8 left-0 right-0 flex justify-center"
+>
+    <svg
+        class="h-8 w-8 animate-bounce text-white/90"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+    >
+        <path d="M6 9l6 6 6-6"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+    </svg>
+</div>
+
+
     @endif
     {{-- klik bilo gde: otključaj skrol + (ponovo) pusti video --}}
     <div x-show="requiresClick && !opened" class="absolute inset-0">

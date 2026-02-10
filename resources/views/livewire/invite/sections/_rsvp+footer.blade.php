@@ -77,15 +77,29 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                     {{-- Radio status (kao na slici, levo poravnato) --}}
                     <div class="space-y-3 pt-1">
                         @foreach([ 'yes' => $optYes, 'maybe' => $optMaybe, 'no' => $optNo ] as $k => $label)
-                        <label class="flex items-center gap-3 text-sm cursor-pointer" style="color: {{ $rsvpRadioAccent }};">
-                            <input
-                            type="radio"
-                            name="rsvp_status"
-                            value="{{ $k }}"
-                            wire:model.defer="status"
-                            class="h-4 w-4"
-                            style="accent-color: {{ $rsvpRadioAccent }};"
-                            >
+                        <label class="flex items-center gap-3 text-sm cursor-pointer select-none"
+                            style="color: {{ $rsvpRadioAccent }};">
+                            <span class="relative h-4 w-4 inline-flex items-center justify-center">
+                                {{-- pravi radio (nevidljiv, ali klik radi) --}}
+                                <input
+                                type="radio"
+                                name="rsvp_status"
+                                value="{{ $k }}"
+                                wire:model.defer="status"
+                                class="peer absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+                                />
+                                {{-- custom ring --}}
+                                <span
+                                    class="h-4 w-4 rounded-full transition"
+                                    style="border: 1.5px solid {{ $rsvpRadioAccent }};"
+                                ></span>
+                                {{-- dot --}}
+                                <span
+                                    class="absolute h-2 w-2 rounded-full opacity-0 scale-75 transition
+                                    peer-checked:opacity-100 peer-checked:scale-100"
+                                    style="background: {{ $rsvpRadioAccent }};"
+                                ></span>
+                            </span>
                             <span>{{ $label }}</span>
                         </label>
                         @endforeach
