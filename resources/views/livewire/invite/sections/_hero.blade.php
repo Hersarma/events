@@ -20,7 +20,7 @@
 <div
     x-show="opened"
     x-transition.opacity
-    class="pointer-events-none absolute bottom-8 left-0 right-0 flex justify-center"
+    class="pointer-events-none absolute bottom-20 left-0 right-0 flex justify-center"
 >
     <svg
         class="h-8 w-8 animate-bounce text-white/90"
