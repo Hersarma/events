@@ -71,7 +71,7 @@
             @include('livewire.invite.sections._hero', ['event' => $event])
 
             {{-- CONTENT (tek nakon klika) --}}
-            <div x-show="opened" x-transition.opacity.duration.300ms class="pb-14">
+            <div x-show="opened" x-transition.opacity.duration.300ms class="">
                 @include('livewire.invite.sections._intro', ['event' => $event, 'c' => $c, 's' => $s])
 
                 @include('livewire.invite.sections._date', [
@@ -86,11 +86,10 @@
                     'event' => $event, 's' => $s, 'himg' => $himg
                 ])
 
-                @include('livewire.invite.sections._rsvp', [
+                @include('livewire.invite.sections._rsvp+footer', [
                     'event' => $event, 'c' => $c, 's' => $s, 'formKey' => $formKey
                 ])
 
-                @include('livewire.invite.sections._footer', ['s' => $s])
 
                 @include('livewire.invite.sections._styles')
             </div>
