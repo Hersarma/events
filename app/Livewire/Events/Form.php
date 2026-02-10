@@ -76,7 +76,6 @@ class Form extends Component
 
     /** stored paths */
     public ?string $location_marker_path = null;
-    public ?string $location_image_path = null;
     public ?string $hero_video_path = null;
     public ?string $hero_image_path = null;
     public ?string $map_image_path = null;
@@ -118,7 +117,6 @@ class Form extends Component
             $this->map_image_path = $event->map_image_path;
 
             $this->location_marker_path = $event->location_marker_path;
-            $this->location_image_path  = $event->location_image_path;
 
             // style -> properties (fallback neutral)
             $this->location_bg = data_get($event->style, 'location.bg', '#ffffff');
@@ -283,12 +281,6 @@ class Form extends Component
         }
 
         // upload location image
-        if ($this->location_image) {
-            if ($this->event?->location_image_path) {
-                Storage::disk('public')->delete($this->event->location_image_path);
-            }
-            $this->location_image_path = $this->location_image->store('invites', 'public');
-        }
 
         // uploads + delete old
         if ($this->hero_video) {
@@ -334,8 +326,7 @@ class Form extends Component
             
 
             'location_marker_path' => $this->location_marker_path,
-            'location_image_path'  => $this->location_image_path,
-
+            
             'content' => $this->content,
             'style' => $this->style,
         ];

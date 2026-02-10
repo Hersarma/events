@@ -311,6 +311,22 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Slika mape (PNG)</label>
+                            <input type="file" accept="image/*" wire:model="map_image"
+                                   class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
+                            @error('map_image') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+
+                            <div wire:loading wire:target="map_image" class="text-sm text-gray-600">Uploadujem sliku...</div>
+
+                            @if($map_image_path)
+                                <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                                    <img src="{{ asset('storage/'.$map_image_path) }}" alt="Mapa" class="w-full object-cover">
+                                </div>
+                            @endif
+                       
+                    </div>
                     <div>
                         <label class="text-sm font-medium text-gray-700">Marker ikonica (PNG)</label>
                         <input type="file" accept="image/png" wire:model="location_marker"
@@ -320,19 +336,6 @@
                         @if($location_marker_path)
                             <div class="mt-3">
                                 <img src="{{ asset('storage/'.$location_marker_path) }}" class="h-12 w-12 object-contain" alt="Marker preview">
-                            </div>
-                        @endif
-                    </div>
-
-                    <div>
-                        <label class="text-sm font-medium text-gray-700">Slika lokacije (ispod teksta)</label>
-                        <input type="file" accept="image/*" wire:model="location_image"
-                               class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
-                        @error('location_image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-
-                        @if($location_image_path)
-                            <div class="mt-3 overflow-hidden rounded-2xl border border-gray-200">
-                                <img src="{{ asset('storage/'.$location_image_path) }}" class="w-full object-cover" alt="Location preview">
                             </div>
                         @endif
                     </div>
@@ -484,25 +487,6 @@
             </div>
         </div>
 
-        {{-- 6) MAPA + FOOTER LOGO (opciono) --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-3">
-                <div class="font-semibold">Slika mape (opciono)</div>
-                
-
-                <input type="file" accept="image/*" wire:model="map_image"
-                       class="block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
-                @error('map_image') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-
-                <div wire:loading wire:target="map_image" class="text-sm text-gray-600">Uploadujem sliku...</div>
-
-                @if($map_image_path)
-                    <div class="rounded-2xl border border-gray-200 overflow-hidden">
-                        <img src="{{ asset('storage/'.$map_image_path) }}" alt="Mapa" class="w-full object-cover">
-                    </div>
-                @endif
-            </div>
-        </div>
 
         {{-- 7) STATUS --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

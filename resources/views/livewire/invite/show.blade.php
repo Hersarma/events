@@ -86,7 +86,7 @@
         $dateTextPrimary = data_get($s, 'date.text_primary', '#111827');
         $dateTextSecondary = data_get($s, 'date.text_secondary', '#6b7280');
         $dateLines = data_get($s, 'date.lines', '#d1d5db');
-         $locationBg = data_get($s, 'location.bg', '#ffffff');
+        $locationBg = data_get($s, 'location.bg', '#ffffff');
         $locationText = data_get($s, 'location.text', '#111827');
         $locationSubText = data_get($s, 'location.sub_text', '#6b7280');
 
@@ -236,9 +236,6 @@
     </section>
 @endif
 
-
-
-
       {{-- LOCATION (marker + naziv + adresa | mapa klikabilna) --}}
 <section class="w-full" style="background: {{ $locationBg }};">
     <div class="mx-auto max-w-5xl px-6 {{ $py }}">
@@ -294,12 +291,6 @@
     </div>
 </section>
 @endif
-
-
-
-
-
-
 
         {{-- RSVP --}}
         <section style="background: {{ $rsvpBg }};">
