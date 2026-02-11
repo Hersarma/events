@@ -49,8 +49,8 @@
     $c = (array) ($event->content ?? []);
     $s = (array) ($event->style ?? []);
     // shared dimenzije (koje si već koristio)
-    $h = 'h-[105px]';
-    $himg = 'h-[185px]';
+    $h = 'h-[90px]';
+    $himg = 'h-[186px]';
     $py = 'py-12';
     @endphp
     <div class="min-h-screen bg-neutral-100 lg:flex lg:items-center lg:justify-center">
