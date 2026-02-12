@@ -19,7 +19,7 @@ $introTextText  = data_get($c, 'intro_text', '');
             </div>
             @endif
             @if($introTextText)
-            <p class="px-6 sm:px-12 text-base leading-7" style="color: {{ $introText }};">
+            <p class="px-6 sm:px-12 text-lg leading-7" style="color: {{ $introText }};">
                 {{ $introTextText }}
             </p>
             @endif
