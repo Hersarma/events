@@ -31,16 +31,16 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
     <div class="mx-auto max-w-5xl px-6 py-12">
         {{-- Title (kao na slici) --}}
         <div class="text-center">
-            <h2 class="uppercase tracking-[0.15em] text-sm" style="color: {{ $rsvpTitleColor }};">
+            <h2 class="uppercase tracking-[0.15em] text-base" style="color: {{ $rsvpTitleColor }};">
             {!! nl2br(e($rsvpTitleText)) !!}
             </h2>
             @if($rsvpSubText)
-            <p class="uppercase tracking-[0.15em] text-sm" style="color: {{ $rsvpSubColor }};">
+            <p class="uppercase tracking-[0.15em] text-base" style="color: {{ $rsvpSubColor }};">
                 {{ $rsvpSubText }}
             </p>
             @endif
             @if($rsvpThirdText)
-            <p class="uppercase tracking-[0.15em] text-sm" style="color: {{ $rsvpThirdColor }};">
+            <p class="uppercase tracking-[0.15em] text-base" style="color: {{ $rsvpThirdColor }};">
                 {{ $rsvpThirdText }}
             </p>
             @endif
@@ -52,7 +52,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                 <form wire:submit.prevent="submit" class="space-y-5">
                     {{-- Ime --}}
                     <div>
-                        <label class="block text-sm font-medium" style="color: {{ $rsvpLabelColor }};">
+                        <label class="block text-base font-medium" style="color: {{ $rsvpLabelColor }};">
                             {{ $nameLabel }}
                         </label>
                         <input
@@ -60,11 +60,11 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                         class="mt-2 w-full px-4 py-3 outline-none"
                         style="background: {{ $rsvpInputBg }}; border: 1px solid {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
                         />
-                        @error('name') <p class="mt-1 text-sm text-red-700">{{ $message }}</p> @enderror
+                        @error('name') <p class="mt-1 text-base text-red-700">{{ $message }}</p> @enderror
                     </div>
                     {{-- Telefon --}}
                     <div>
-                        <label class="block text-sm font-medium" style="color: {{ $rsvpLabelColor }};">
+                        <label class="block text-base font-medium" style="color: {{ $rsvpLabelColor }};">
                             {{ $phoneLabel }}
                         </label>
                         <input
@@ -72,12 +72,12 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                         class="mt-2 w-full px-4 py-3 outline-none"
                         style="background: {{ $rsvpInputBg }}; border: 1px solid {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
                         />
-                        @error('phone') <p class="mt-1 text-sm text-red-700">{{ $message }}</p> @enderror
+                        @error('phone') <p class="mt-1 text-base text-red-700">{{ $message }}</p> @enderror
                     </div>
                     {{-- Radio status (kao na slici, levo poravnato) --}}
                     <div class="space-y-3 pt-1">
                         @foreach([ 'yes' => $optYes, 'maybe' => $optMaybe, 'no' => $optNo ] as $k => $label)
-                        <label class="flex items-center gap-3 text-sm cursor-pointer select-none"
+                        <label class="flex items-center gap-3 text-base cursor-pointer select-none"
                             style="color: {{ $rsvpRadioAccent }};">
                             <span class="relative h-4 w-4 inline-flex items-center justify-center">
                                 {{-- pravi radio (nevidljiv, ali klik radi) --}}
@@ -111,7 +111,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                         type="submit"
                         wire:loading.attr="disabled"
                         wire:target="submit"
-                        class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold shadow-sm disabled:opacity-60"
+                        class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold shadow-sm disabled:opacity-60"
                         style="background: {{ $rsvpBtnBg }}; color: {{ $rsvpBtnText }};"
                         >
                         <span wire:loading.remove wire:target="submit">{{ $btnLabel }}</span>
