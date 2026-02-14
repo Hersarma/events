@@ -126,9 +126,9 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
         <div class="mt-10 text-center">
             {{-- LOGO (uvek iz images foldera) --}}
             <img
-            src="{{ asset('images/logo.png') }}"
+            src="{{ asset('images/logo2.png') }}"
             alt="Logo"
-            class="mx-auto h-14 w-14 object-contain rounded-full p-2 ring-1 ring-emerald-300/20"
+            class="mx-auto h-14 w-14 object-contain p-2"
             >
             {{-- FOOTER TEKST --}}
             <p class="text-xs uppercase tracking-widest pt-2"
