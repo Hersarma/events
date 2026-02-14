@@ -1,6 +1,6 @@
 {{-- resources/views/livewire/events/form.blade.php --}}
-<div class="max-w-5xl mx-auto px-6 py-8">
-    {{-- Header --}}
+<div class="mx-auto px-6 py-8">
+{{-- Header --}}
     <div class="flex items-start justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold">
@@ -31,6 +31,10 @@
         {{ session('status') }}
     </div>
     @endif
+
+<div class="mt-6 grid grid-cols-1 lg:grid-cols-2 items-start">
+  {{-- LEFT: Editor --}}
+  <div>
     <form wire:submit.prevent="save" class="mt-6 space-y-6">
         {{-- 0) OSNOVNE INFORMACIJE (meta događaja) --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
@@ -577,4 +581,15 @@
             </button>
         </div>
     </form>
+  </div>
+
+  {{-- RIGHT: Preview --}}
+  <div class="lg:sticky lg:top-6">
+    @include('livewire.invite.preview._phone', [
+  'event' => $this->previewEvent,
+  'opened' => true,
+  'requiresClick' => false,
+])
+  </div>
+</div>
 </div>

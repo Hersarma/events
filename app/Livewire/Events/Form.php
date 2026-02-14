@@ -378,6 +378,54 @@ $this->location_marker_path = null;
 $this->event->update(['location_marker_path' => null]);
 $this->dispatch('flash', message: 'Marker je uklonjen.', type: 'success');
 }
+public function getPreviewEventProperty(): Event
+{
+    // Napravi "fake" Event objekat za preview (bez snimanja u DB)
+    $e = $this->event ? $this->event->replicate() : new Event();
+
+    // Osnovno
+    $e->template = $this->template;
+    $e->language = $this->language;
+    $e->title = $this->title;
+    $e->slug = $this->slug;
+    $e->token = $this->token;
+    $e->date_at = $this->date_at ? now()->parse($this->date_at) : null;
+
+    $e->location_name = $this->location_name ?: null;
+    $e->location_address = $this->location_address ?: null;
+    $e->location_url = $this->location_url ?: null;
+
+    // Content / style
+    $e->content = $this->content;
+    $e->style = $this->style;
+
+    // Hero
+    $e->hero_type = $this->hero_type;
+
+    $e->hero_video_path = $this->hero_video
+    ? $this->hero_video->temporaryUrl()
+    : $this->hero_video_path;
+
+$e->hero_image_path = $this->hero_image
+    ? $this->hero_image->temporaryUrl()
+    : $this->hero_image_path;
+
+$e->map_image_path = $this->map_image
+    ? $this->map_image->temporaryUrl()
+    : $this->map_image_path;
+
+$e->location_marker_path = $this->location_marker
+    ? $this->location_marker->temporaryUrl()
+    : $this->location_marker_path;
+
+
+
+    // RSVP (ako ti treba u preview-u)
+    $e->rsvp_email = $this->rsvp_email ?: null;
+
+    return $e;
+}
+
 public function render()
 {
 return view('livewire.events.form');
