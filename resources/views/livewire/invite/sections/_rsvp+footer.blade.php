@@ -31,16 +31,16 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
     <div class="mx-auto max-w-5xl px-6 py-12">
         {{-- Title (kao na slici) --}}
         <div class="text-center">
-            <h2 class="uppercase tracking-[0.15em] text-base" style="color: {{ $rsvpTitleColor }};">
+            <h2 class="uppercase tracking-widest text-base" style="color: {{ $rsvpTitleColor }};">
             {!! nl2br(e($rsvpTitleText)) !!}
             </h2>
             @if($rsvpSubText)
-            <p class="uppercase tracking-[0.15em] text-base" style="color: {{ $rsvpSubColor }};">
+            <p class="uppercase tracking-widest text-base" style="color: {{ $rsvpSubColor }};">
                 {{ $rsvpSubText }}
             </p>
             @endif
             @if($rsvpThirdText)
-            <p class="uppercase tracking-[0.15em] text-base" style="color: {{ $rsvpThirdColor }};">
+            <p class="uppercase tracking-widest text-base" style="color: {{ $rsvpThirdColor }};">
                 {{ $rsvpThirdText }}
             </p>
             @endif

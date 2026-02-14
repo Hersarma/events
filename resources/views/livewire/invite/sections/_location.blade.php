@@ -16,7 +16,7 @@ $locationText = data_get($s, 'location.text', '#111827');
                 <div class="py-0.5"></div>
                 @if($event->location_address || $event->location_name)
                 <div
-                    class="uppercase text-sm tracking-[0.15em]"
+                    class="uppercase tracking-widest"
                     style="color: {{ $locationText }};"
                     >
                     {{ collect([$event->location_address, $event->location_name])->filter()->implode(', ') }}

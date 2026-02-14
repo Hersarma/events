@@ -34,13 +34,13 @@ $monthName = data_get($c, 'date_month_name', $autoMonthName);
                     <div class="text-4xl font-semibold leading-none" style="color: {{ $dateTextPrimary }};">
                         {{ $dayNum }}
                     </div>
-                    <div class="pt-2" style="color: {{ $dateTextSecondary }};">
+                    <div class="pt-2 tracking-widest text-lg" style="color: {{ $dateTextSecondary }};">
                         {{ $year }}
                     </div>
                 </div>
                 <div class="flex flex-col items-center justify-center gap-2 -ml-12">
                     <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
-                    <div style="color: {{ $dateTextPrimary }};">
+                    <div class="tracking-widest text-lg" style="color: {{ $dateTextPrimary }};">
                         {{ $time }}
                     </div>
                     <div class="h-px w-24" style="background: {{ $dateLines }};"></div>
