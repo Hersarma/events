@@ -12,7 +12,7 @@ $introTextText  = data_get($c, 'intro_text', '');
             @if($introTitleText)
             <div class="flex items-center justify-center gap-4">
                 <div class="h-px w-14" style="background: {{ $introTitle }};"></div>
-                <p class="uppercase tracking-[0.25em] text-sm" style="color: {{ $introTitle }};">
+                <p class="uppercase tracking-widest font-bold" style="color: {{ $introTitle }};">
                     {{ $introTitleText }}
                 </p>
                 <div class="h-px w-14" style="background: {{ $introTitle }};"></div>
