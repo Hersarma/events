@@ -128,7 +128,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
             <img
             src="{{ asset('images/logo2.png') }}"
             alt="Logo"
-            class="mx-auto h-14 w-14 object-contain p-2"
+            class="mx-auto h-16 w-16 object-contain p-2"
             >
             {{-- FOOTER TEKST --}}
             <p class="text-xs uppercase tracking-widest pt-2"
