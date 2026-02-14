@@ -3,12 +3,13 @@
 $locationBg = data_get($s, 'location.bg', '#ffffff');
 $locationText = data_get($s, 'location.text', '#111827');
 @endphp
+@if($event->map_image_path)
 <section class="w-full" style="background: {{ $locationBg }};">
     <div class="mx-auto max-w-5xl px-6 py-12">
         <div class="{{ $h }} flex items-center justify-center text-center">
             <div class="space-y-4">
                 <img
-                src="{{ asset('images/location-pin.png') }}"
+                src="{{ asset('storage/'.$event->location_marker_path) }}"
                 alt="Lokacija"
                 class="mx-auto h-12 w-12 object-contain opacity-90"
                 />
@@ -25,3 +26,4 @@ $locationText = data_get($s, 'location.text', '#111827');
         </div>
     </div>
 </section>
+@endif
