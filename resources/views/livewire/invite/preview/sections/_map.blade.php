@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/invite/sections/_map.blade.php --}}
 @php
   $locationBg = data_get($s, 'location.bg', '#ffffff');
 
@@ -9,25 +8,41 @@
     : null;
 @endphp
 
-@if($mapSrc)
 <section class="w-full" style="background: {{ $locationBg }};">
   <div class="{{ $himg }} w-full relative overflow-hidden">
-    @if($event->location_url)
-      <a href="{{ $event->location_url }}" target="_blank" class="absolute inset-0 block group">
-        <img
-          src="{{ $mapSrc }}"
-          alt="Mapa"
-          class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      </a>
+
+    @if($mapSrc)
+
+        @if($event->location_url)
+            <a href="{{ $event->location_url }}" target="_blank" class="absolute inset-0 block group">
+                <img
+                    src="{{ $mapSrc }}"
+                    alt="Mapa"
+                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </a>
+        @else
+            <img
+                src="{{ $mapSrc }}"
+                alt="Mapa"
+                class="h-full w-full object-cover"
+            />
+        @endif
+
     @else
-      <img
-        src="{{ $mapSrc }}"
-        alt="Mapa"
-        class="h-full w-full object-cover"
-      />
+
+        {{-- ✅ Placeholder mapa --}}
+        <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+            <div class="text-center text-gray-600 space-y-2">
+                <div class="text-3xl">🗺️</div>
+                <div class="uppercase tracking-widest text-sm">
+                    Ovde će biti mapa lokacije
+                </div>
+            </div>
+        </div>
+
     @endif
+
   </div>
 </section>
-@endif

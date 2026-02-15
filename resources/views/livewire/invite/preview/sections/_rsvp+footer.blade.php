@@ -1,8 +1,8 @@
 {{-- resources/views/livewire/invite/sections/_rsvp.blade.php --}}
 @php
-$rsvpTitleText = data_get($c, 'rsvp_title', '');
-$rsvpSubText   = data_get($c, 'rsvp_subtitle', '');
-$rsvpThirdText = data_get($c, 'rsvp_third', '');
+$rsvpTitleText = data_get($c, 'rsvp_title', 'Tekst 1');
+$rsvpSubText   = data_get($c, 'rsvp_subtitle', 'Tekst 2');
+$rsvpThirdText = data_get($c, 'rsvp_third', 'Tekst 3');
 $nameLabel  = data_get($c, 'rsvp_name_label', 'Ime i prezime');
 $phoneLabel = data_get($c, 'rsvp_phone_label', 'Broj mobitela');
 $optYes   = data_get($c, 'rsvp_opt_yes', 'Dolazim sam');
@@ -56,7 +56,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                             {{ $nameLabel }}
                         </label>
                         <input
-                        
+                        disabled
                         class="mt-2 w-full px-4 py-3 outline-none"
                         style="background: {{ $rsvpInputBg }}; border: 1px solid {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
                         />
@@ -68,7 +68,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                             {{ $phoneLabel }}
                         </label>
                         <input
-                        
+                        disabled
                         class="mt-2 w-full px-4 py-3 outline-none"
                         style="background: {{ $rsvpInputBg }}; border: 1px solid {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
                         />
@@ -82,6 +82,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                             <span class="relative h-4 w-4 inline-flex items-center justify-center">
                                 {{-- pravi radio (nevidljiv, ali klik radi) --}}
                                 <input
+                                disabled
                                 type="radio"
                                 name="rsvp_status"
                                 value="{{ $k }}"

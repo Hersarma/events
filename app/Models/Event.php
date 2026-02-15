@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 
 class Event extends Model
 {
@@ -35,6 +36,8 @@ class Event extends Model
         'style',
         'location_marker_path',
         'location_image_path',
+        'guest_list_pin_hash',
+        'guest_list_pin_set_at',
 
 
     ];
@@ -45,6 +48,7 @@ class Event extends Model
         'content' => 'array',
         'style' => 'array',
         'is_active' => 'boolean',
+        'guest_list_pin_set_at' => 'datetime',
     ];
 
     public function rsvps(): HasMany
@@ -66,4 +70,7 @@ class Event extends Model
     {
         return Str::lower(Str::random(6) . '-' . Str::random(6));
     }
+
+    
+
 }

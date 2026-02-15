@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Invite\Show as InviteShow;
 use App\Livewire\Events\Index as EventsIndex;
 use App\Livewire\Events\Form as EventsForm;
+use App\Livewire\PublicGuests\Pin;
+use App\Livewire\PublicGuests\GuestList;
 
 // HOME
 Route::get('/', function () {
@@ -15,7 +17,8 @@ Route::get('/', function () {
 
 // PUBLIC INVITE
 Route::get('/inv/{token}', InviteShow::class)->name('invite.show');
-
+Route::get('/guests/{token}', Pin::class)->name('public.guests.pin');
+Route::get('/guests/{token}/list', GuestList::class)->name('public.guests.list');
 
 // ADMIN
 Route::middleware(['auth'])->group(function () {

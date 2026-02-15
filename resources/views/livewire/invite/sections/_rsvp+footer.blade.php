@@ -5,9 +5,10 @@ $rsvpSubText   = data_get($c, 'rsvp_subtitle', '');
 $rsvpThirdText = data_get($c, 'rsvp_third', '');
 $nameLabel  = data_get($c, 'rsvp_name_label', 'Ime i prezime');
 $phoneLabel = data_get($c, 'rsvp_phone_label', 'Broj mobitela');
-$optYes   = data_get($c, 'rsvp_opt_yes', 'Dolazim sam');
-$optMaybe = data_get($c, 'rsvp_opt_maybe', 'Dolazim u dvoje');
-$optNo    = data_get($c, 'rsvp_opt_no', 'Ne dolazim');
+$optYes    = data_get($c, 'rsvp_opt_yes', 'Dolazim sam');
+$optCouple = data_get($c, 'rsvp_opt_couple', data_get($c, 'rsvp_opt_maybe', 'Dolazim u dvoje'));
+$optNo     = data_get($c, 'rsvp_opt_no', 'Ne dolazim');
+
 $btnLabel = data_get($c, 'rsvp_btn_label', 'Pošalji');
 $btnLoading = data_get($c, 'rsvp_btn_loading', 'Šaljem...');
 $rsvpBg         = data_get($s, 'rsvp.bg', '#6F7C72');
@@ -76,7 +77,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                     </div>
                     {{-- Radio status (kao na slici, levo poravnato) --}}
                     <div class="space-y-3 pt-1">
-                        @foreach([ 'yes' => $optYes, 'maybe' => $optMaybe, 'no' => $optNo ] as $k => $label)
+                        @foreach([ 'yes' => $optYes, 'couple' => $optCouple, 'no' => $optNo ] as $k => $label)
                         <label class="flex items-center gap-3 text-base cursor-pointer select-none"
                             style="color: {{ $rsvpRadioAccent }};">
                             <span class="relative h-4 w-4 inline-flex items-center justify-center">

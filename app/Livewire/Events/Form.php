@@ -9,6 +9,8 @@ use Livewire\WithFileUploads;
 class Form extends Component
 {
 use WithFileUploads;
+public ?string $guest_list_pin = null; // 4 cifre (unos)
+
 public ?Event $event = null;
 // ✅ samo proslava (možeš kasnije i ovo da izbaciš skroz ako hoćeš)
 public string $template = 'celebration';
@@ -178,6 +180,7 @@ $this->validate([
 
 'content' => ['array'],
 'style' => ['array'],
+'guest_list_pin' => ['nullable', 'regex:/^\d{4}$/'],
 ]);
 $slug = $this->event?->slug ?: Event::makeSlug($this->title);
 $token = $this->event?->token ?: ($this->token ?: Event::makeToken());
@@ -250,6 +253,10 @@ $payload = [
 'content' => $this->content,
 'style' => $this->style,
 ];
+if (!empty($this->guest_list_pin)) {
+    $payload['guest_list_pin_hash'] = \Illuminate\Support\Facades\Hash::make($this->guest_list_pin);
+    $payload['guest_list_pin_set_at'] = now();
+}
 $event = $this->event
 ? tap($this->event)->update($payload)
 : Event::create($payload);
@@ -301,7 +308,7 @@ return [
 'button_text' => '#ffffff',
 ],
 'footer' => [
-'text_color' => '#ffffff',
+'text_color' => '#111827',
 ],
 ];
 }
@@ -380,51 +387,64 @@ $this->dispatch('flash', message: 'Marker je uklonjen.', type: 'success');
 }
 public function getPreviewEventProperty(): Event
 {
-    // Napravi "fake" Event objekat za preview (bez snimanja u DB)
     $e = $this->event ? $this->event->replicate() : new Event();
 
-    // Osnovno
     $e->template = $this->template;
     $e->language = $this->language;
-    $e->title = $this->title;
-    $e->slug = $this->slug;
-    $e->token = $this->token;
-    $e->date_at = $this->date_at ? now()->parse($this->date_at) : null;
+    $e->title    = $this->title;
+    $e->slug     = $this->slug;
+    $e->token    = $this->token;
 
-    $e->location_name = $this->location_name ?: null;
+    $e->date_at = $this->date_at ? now()->parse($this->date_at) : now();
+
+    $e->location_name    = $this->location_name ?: null;
     $e->location_address = $this->location_address ?: null;
-    $e->location_url = $this->location_url ?: null;
+    $e->location_url     = $this->location_url ?: null;
 
-    // Content / style
+    $style = $this->style;
+
+    data_set($style, 'location.bg', $this->location_bg);
+    data_set($style, 'location.text', $this->location_text);
+    data_set($style, 'location.sub_text', $this->location_sub_text);
+
+    data_set($style, 'date.bg', $this->date_bg);
+    data_set($style, 'date.text_primary', $this->date_text_primary);
+    data_set($style, 'date.text_secondary', $this->date_text_secondary);
+    data_set($style, 'date.lines', $this->date_lines);
+
+    data_set($style, 'rsvp.bg', $this->rsvp_bg);
+    data_set($style, 'rsvp.title_color', $this->rsvp_title_color);
+    data_set($style, 'rsvp.subtitle_color', $this->rsvp_subtitle_color);
+    data_set($style, 'rsvp.third_color', $this->rsvp_third_color);
+    data_set($style, 'rsvp.card_bg', $this->rsvp_card_bg);
+    data_set($style, 'rsvp.card_border', $this->rsvp_card_border);
+    data_set($style, 'rsvp.label_color', $this->rsvp_label_color);
+    data_set($style, 'rsvp.input_bg', $this->rsvp_input_bg);
+    data_set($style, 'rsvp.input_border', $this->rsvp_input_border);
+    data_set($style, 'rsvp.input_text', $this->rsvp_input_text);
+    data_set($style, 'rsvp.radio_accent', $this->rsvp_radio_accent);
+    data_set($style, 'rsvp.radio_border', $this->rsvp_radio_border);
+    data_set($style, 'rsvp.button_bg', $this->rsvp_button_bg);
+    data_set($style, 'rsvp.button_text', $this->rsvp_button_text);
+
+    data_set($style, 'footer.text_color', $this->footer_text_color);
+
     $e->content = $this->content;
-    $e->style = $this->style;
+    $e->style   = $style;
 
-    // Hero
     $e->hero_type = $this->hero_type;
 
-    $e->hero_video_path = $this->hero_video
-    ? $this->hero_video->temporaryUrl()
-    : $this->hero_video_path;
+    $e->hero_video_path = $this->hero_video ? $this->hero_video->temporaryUrl() : $this->hero_video_path;
+    $e->hero_image_path = $this->hero_image ? $this->hero_image->temporaryUrl() : $this->hero_image_path;
+    $e->map_image_path  = $this->map_image  ? $this->map_image->temporaryUrl()  : $this->map_image_path;
 
-$e->hero_image_path = $this->hero_image
-    ? $this->hero_image->temporaryUrl()
-    : $this->hero_image_path;
+    $e->location_marker_path = $this->location_marker ? $this->location_marker->temporaryUrl() : $this->location_marker_path;
 
-$e->map_image_path = $this->map_image
-    ? $this->map_image->temporaryUrl()
-    : $this->map_image_path;
-
-$e->location_marker_path = $this->location_marker
-    ? $this->location_marker->temporaryUrl()
-    : $this->location_marker_path;
-
-
-
-    // RSVP (ako ti treba u preview-u)
     $e->rsvp_email = $this->rsvp_email ?: null;
 
     return $e;
 }
+
 
 public function render()
 {

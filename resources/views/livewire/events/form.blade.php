@@ -37,6 +37,41 @@
   <div>
     <form wire:submit.prevent="save" class="mt-6 space-y-6">
         {{-- 0) OSNOVNE INFORMACIJE (meta događaja) --}}
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-3">
+    <div class="font-semibold">Lista gostiju (PIN)</div>
+    <p class="text-sm text-gray-600">Klijent otvara link i unosi 4-cifreni PIN.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+        <div>
+            <label class="text-sm font-medium text-gray-700">PIN (4 cifre)</label>
+            <input wire:model.defer="guest_list_pin"
+                   inputmode="numeric" maxlength="4"
+                   class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
+                   placeholder="npr. 1234" />
+            @error('guest_list_pin') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            <p class="mt-1 text-xs text-gray-500">Ako ostane prazno, ne menja se postojeći PIN.</p>
+        </div>
+
+        <div>
+            @if($event)
+                <div class="text-xs text-gray-500 mb-2">Link:</div>
+                <div class="flex gap-2">
+                    <a href="{{ route('public.guests.pin', $event->token) }}" target="_blank"
+                       class="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold">
+                        Otvori
+                    </a>
+                    <button type="button"
+                        class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white"
+                        x-data
+                       @click="navigator.clipboard.writeText(@js(route('public.guests.pin', $event->token)))">
+                        Kopiraj
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
             <div class="flex items-center justify-between">
                 <div class="font-semibold">Osnovne informacije</div>
@@ -57,8 +92,8 @@
                     @endif
                 </div>
                 <div class="sm:col-span-2">
-                    <label class="text-sm font-medium text-gray-700">Naziv događaja (naslov)</label>
-                    <input wire:model.live="title"
+                    <label class="text-sm font-medium text-gray-700">Naziv događaja (naslov) ili ime klijenta</label>
+                    <input wire:model.live.debounce.500ms="title"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                     @error('title') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     <div class="mt-2 text-xs text-gray-500">
@@ -68,33 +103,33 @@
                 {{-- DATE (data) --}}
                 <div>
                     <label class="text-sm font-medium text-gray-700">Datum i vreme</label>
-                    <input type="datetime-local" wire:model.defer="date_at"
+                    <input type="datetime-local" wire:model.live.debounce.500ms="date_at"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                     @error('date_at') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 {{-- RSVP email (data) --}}
                 <div>
                     <label class="text-sm font-medium text-gray-700">RSVP email (prima potvrde)</label>
-                    <input wire:model.defer="rsvp_email"
+                    <input wire:model.live.debounce.500ms="rsvp_email"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                     @error('rsvp_email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 {{-- LOCATION (data) --}}
                 <div>
                     <label class="text-sm font-medium text-gray-700">Mesto</label>
-                    <input wire:model.defer="location_name"
+                    <input wire:model.live.debounce.500ms="location_name"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                     @error('location_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="text-sm font-medium text-gray-700">Adresa lokacije</label>
-                    <input wire:model.defer="location_address"
+                    <input wire:model.live.debounce.500ms="location_address"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                     @error('location_address') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div class="sm:col-span-2">
                     <label class="text-sm font-medium text-gray-700">Link lokacije (Google Maps)</label>
-                    <input wire:model.defer="location_url"
+                    <input wire:model.live.debounce.500ms="location_url"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                     @error('location_url') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
@@ -114,7 +149,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="text-sm font-medium text-gray-700">Tip hero sekcije</label>
-                    <select wire:model.defer="hero_type"
+                    <select wire:model.live="hero_type"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 bg-white outline-none focus:ring-2 focus:ring-gray-200">
                         <option value="video">Video</option>
                         <option value="image">Slika</option>
@@ -136,24 +171,22 @@
                 </div>
                 {{-- Preview odmah nakon izbora fajla --}}
                 @if($hero_video)
-                <div class="rounded-2xl border border-gray-200 overflow-hidden">
-                    <video class="w-40 h-80 object-cover" controls playsinline>
-                        <source src="{{ $hero_video->temporaryUrl() }}" type="video/mp4">
+                  @php $k = md5($hero_video->getFilename() . '|' . $hero_video->getSize()); @endphp
+
+                  <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                    <video wire:key="hero-video-upload-{{ $k }}" class="w-40 h-80 object-cover" controls playsinline>
+                      <source src="{{ $hero_video->temporaryUrl() }}" type="video/mp4">
                     </video>
-                </div>
+                  </div>
+
                 @elseif($hero_video_path)
-                <div class="rounded-2xl border border-gray-200 overflow-hidden">
-                    <video class="w-40 h-80 object-cover" controls playsinline>
-                        <source src="{{ asset('storage/'.$hero_video_path) }}" type="video/mp4">
+                  <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                    <video wire:key="hero-video-stored-{{ md5($hero_video_path) }}" class="w-40 h-80 object-cover" controls playsinline>
+                      <source src="{{ asset('storage/'.$hero_video_path) }}" type="video/mp4">
                     </video>
-                </div>
-                <button type="button"
-                wire:click="removeHeroVideo"
-                wire:confirm="Obrisati hero video?"
-                class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">
-                Ukloni video
-                </button>
+                  </div>
                 @endif
+
             </div>
             {{-- Image upload --}}
             <div class="space-y-2">
@@ -195,12 +228,12 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="text-sm font-medium text-gray-700">Naslov uvoda</label>
-                    <input wire:model.defer="content.intro_title"
+                    <input wire:model.live.debounce.500ms="content.intro_title"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                 </div>
                 <div class="sm:col-span-2">
                     <label class="text-sm font-medium text-gray-700">Uvodni tekst</label>
-                    <textarea wire:model.defer="content.intro_text" rows="4"
+                    <textarea wire:model.live.debounce.500ms="content.intro_text" rows="4"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"></textarea>
                 </div>
             </div>
@@ -210,18 +243,18 @@
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
                         <label class="w-36 text-sm text-gray-700">Pozadina</label>
-                        <input type="color" wire:model.defer="style.intro.bg" class="h-10 w-14 rounded-lg border border-gray-200" />
-                        <input wire:model.defer="style.intro.bg" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
+                        <input type="color" wire:model.live="style.intro.bg" class="h-10 w-14 rounded-lg border border-gray-200" />
+                        <input wire:model.live.debounce.500ms="style.intro.bg" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
                     </div>
                     <div class="flex items-center gap-3">
                         <label class="w-36 text-sm text-gray-700">Naslov</label>
-                        <input type="color" wire:model.defer="style.intro.title_color" class="h-10 w-14 rounded-lg border border-gray-200" />
-                        <input wire:model.defer="style.intro.title_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
+                        <input type="color" wire:model.live="style.intro.title_color" class="h-10 w-14 rounded-lg border border-gray-200" />
+                        <input wire:model.live.debounce.500ms="style.intro.title_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
                     </div>
                     <div class="flex items-center gap-3">
                         <label class="w-36 text-sm text-gray-700">Tekst</label>
-                        <input type="color" wire:model.defer="style.intro.text_color" class="h-10 w-14 rounded-lg border border-gray-200" />
-                        <input wire:model.defer="style.intro.text_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
+                        <input type="color" wire:model.live="style.intro.text_color" class="h-10 w-14 rounded-lg border border-gray-200" />
+                        <input wire:model.live.debounce.500ms="style.intro.text_color" class="flex-1 rounded-2xl border border-gray-200 px-3 py-2 outline-none focus:ring-2 focus:ring-gray-200" />
                     </div>
                 </div>
             </div>
@@ -236,13 +269,13 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="text-sm font-medium text-gray-700">Naziv dana</label>
-                    <input wire:model.defer="content.date_day_name"
+                    <input wire:model.live.debounce.500ms="content.date_day_name"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                     placeholder="npr. Monday" />
                 </div>
                 <div>
                     <label class="text-sm font-medium text-gray-700">Naziv meseca</label>
-                    <input wire:model.defer="content.date_month_name"
+                    <input wire:model.live.debounce.500ms="content.date_month_name"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                     placeholder="npr. agosto" />
                 </div>
@@ -295,22 +328,22 @@
                     <div>
                         <label class="text-sm font-medium text-gray-700">Pozadina</label>
                         <div class="mt-2 flex items-center gap-3">
-                            <input type="color" wire:model.defer="location_bg" class="h-10 w-14 rounded-lg border border-gray-200" />
-                            <input wire:model.defer="location_bg" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
+                            <input type="color" wire:model.live.debounce.500ms="location_bg" class="h-10 w-14 rounded-lg border border-gray-200" />
+                            <input wire:model.live.debounce.500ms="location_bg" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
                         </div>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-700">Boja teksta (naziv)</label>
                         <div class="mt-2 flex items-center gap-3">
-                            <input type="color" wire:model.defer="location_text" class="h-10 w-14 rounded-lg border border-gray-200" />
-                            <input wire:model.defer="location_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
+                            <input type="color" wire:model.live.debounce.500ms="location_text" class="h-10 w-14 rounded-lg border border-gray-200" />
+                            <input wire:model.live.debounce.500ms="location_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
                         </div>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-700">Boja teksta (adresa)</label>
                         <div class="mt-2 flex items-center gap-3">
-                            <input type="color" wire:model.defer="location_sub_text" class="h-10 w-14 rounded-lg border border-gray-200" />
-                            <input wire:model.defer="location_sub_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
+                            <input type="color" wire:model.live.debounce.500ms="location_sub_text" class="h-10 w-14 rounded-lg border border-gray-200" />
+                            <input wire:model.live.debounce.500ms="location_sub_text" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2" />
                         </div>
                     </div>
                 </div>
@@ -385,17 +418,17 @@
             <div class="space-y-4">
                 <div>
                     <label class="text-sm font-medium text-gray-700">RSVP tekst 1</label>
-                    <input wire:model.defer="content.rsvp_title"
+                    <input wire:model.live.debounce.500ms="content.rsvp_title"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                 </div>
                 <div>
                     <label class="text-sm font-medium text-gray-700">RSVP tekst 2</label>
-                    <input wire:model.defer="content.rsvp_subtitle"
+                    <input wire:model.live.debounce.500ms="content.rsvp_subtitle"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                 </div>
                 <div>
                     <label class="text-sm font-medium text-gray-700">RSVP tekst 3</label>
-                    <input wire:model.defer="content.rsvp_third"
+                    <input wire:model.live.debounce.500ms="content.rsvp_third"
                     class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200" />
                 </div>
             </div>
@@ -407,13 +440,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="text-sm font-medium text-gray-700">Label za ime</label>
-                        <input wire:model.defer="content.rsvp_name_label"
+                        <input wire:model.live.debounce.500ms="content.rsvp_name_label"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Ime i prezime" />
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-700">Label za telefon</label>
-                        <input wire:model.defer="content.rsvp_phone_label"
+                        <input wire:model.live.debounce.500ms="content.rsvp_phone_label"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Broj mobitela" />
                     </div>
@@ -421,19 +454,19 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="text-sm font-medium text-gray-700">Opcija: YES</label>
-                        <input wire:model.defer="content.rsvp_opt_yes"
+                        <input wire:model.live.debounce.500ms="content.rsvp_opt_yes"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Dolazim sam" />
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-700">Opcija: MAYBE</label>
-                        <input wire:model.defer="content.rsvp_opt_maybe"
+                        <input wire:model.live.debounce.500ms="content.rsvp_opt_maybe"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Dolazim u dvoje" />
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-700">Opcija: NO</label>
-                        <input wire:model.defer="content.rsvp_opt_no"
+                        <input wire:model.live.debounce.500ms="content.rsvp_opt_no"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Ne dolazim" />
                     </div>
@@ -441,13 +474,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="text-sm font-medium text-gray-700">Tekst dugmeta</label>
-                        <input wire:model.defer="content.rsvp_btn_label"
+                        <input wire:model.live.debounce.500ms="content.rsvp_btn_label"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Pošalji" />
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-700">Tekst dok se šalje</label>
-                        <input wire:model.defer="content.rsvp_btn_loading"
+                        <input wire:model.live.debounce.500ms="content.rsvp_btn_loading"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Šaljem..." />
                     </div>

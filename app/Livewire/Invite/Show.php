@@ -39,37 +39,41 @@ class Show extends Component
 
 
     public function submit(): void
-    {
-        $this->validate([
-            'status' => ['required', 'in:yes,maybe,no'],
-            'name' => ['required', 'string', 'min:2', 'max:80'],
-            'email' => ['nullable', 'email', 'max:120'],
-            'phone' => ['nullable', 'string', 'max:40'],
-            'guests_count' => ['required', 'integer', 'min:1', 'max:20'],
-        ]);
+{
+    $this->validate([
+        'status' => ['required','in:yes,couple,no'],
+        'name' => ['required', 'string', 'min:2', 'max:80'],
+        'email' => ['nullable', 'email', 'max:120'],
+        'phone' => ['nullable', 'string', 'max:40'],
+    ]);
 
-        $rsvp = EventRsvp::create([
-            'event_id' => $this->event->id,
-            'status' => $this->status,
-            'name' => trim($this->name),
-            'email' => trim($this->email) ?: null,
-            'phone' => trim($this->phone) ?: null,
-            'guests_count' => (int) $this->guests_count,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-        ]);
+    $guests = match ($this->status) {
+        'yes' => 1,
+        'couple' => 2,
+        'no' => 0,
+    };
 
-       
+    $rsvp = EventRsvp::create([
+        'event_id' => $this->event->id,
+        'status' => $this->status,
+        'name' => trim($this->name),
+        'email' => trim($this->email) ?: null,
+        'phone' => trim($this->phone) ?: null,
+        'guests_count' => $guests,
+        'ip_address' => request()->ip(),
+        'user_agent' => request()->userAgent(),
+    ]);
 
-        $this->dispatch('flash',
-            message: 'Hvala! Potvrda je poslata.',
-            type: 'success'
-        );
+    $this->dispatch('flash',
+        message: 'Hvala! Potvrda je poslata.',
+        type: 'success'
+    );
 
-        $this->reset(['name', 'email', 'phone', 'guests_count']);
-        $this->guests_count = 1;
-        $this->formKey++;
-    }
+    $this->reset(['name', 'email', 'phone']);
+    $this->status = 'yes';
+    $this->formKey++;
+}
+
 
     public function render()
     {
