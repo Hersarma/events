@@ -2,35 +2,56 @@
   <div class="mx-auto w-full max-w-3xl">
 
     {{-- HEADER + STATISTIKA --}}
-    <div class="rounded-2xl border border-gray-200 bg-white p-6">
-      <div class="text-xl font-bold">{{ $event->title }}</div>
-      <div class="text-sm text-gray-600 mt-1">Lista gostiju</div>
+   <div class="rounded-2xl border border-gray-200 bg-white p-6">
+  <div class="text-xl font-bold">{{ $event->title }}</div>
+  <div class="text-sm text-gray-600 mt-1">Lista gostiju</div>
 
-      {{-- FILTER --}}
-      <div class="mt-4 flex items-center justify-between">
-        <div>
-          <label class="text-sm text-gray-600">Prikaži:</label>
-          <select wire:model.live="filter"
-              class="ml-2 rounded-xl border border-gray-200 px-3 py-2 text-sm">
-              <option value="all">Svi</option>
-              <option value="coming">Dolaze</option>
-              <option value="not_coming">Ne dolaze</option>
-              
-          </select>
-        </div>
-      </div>
+  {{-- FILTER + SEARCH --}}
+  <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+    <div class="sm:col-span-1">
+      <label class="text-sm text-gray-600">Prikaži:</label>
+      <select wire:model.live="filter"
+          class="mt-2 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm">
+          <option value="all">Svi</option>
+          <option value="coming">Dolaze</option>
+          <option value="not_coming">Ne dolaze</option>
+      </select>
+    </div>
 
-      {{-- STATISTIKA --}}
-      <div class="mt-5 grid grid-cols-2 gap-3">
-        <div class="rounded-xl border border-gray-200 p-4">
-          <div class="text-xs text-gray-500">Ukupno dolazi</div>
-          <div class="text-2xl font-bold text-green-600">
-            {{ $comingCount }}
-          </div>
-        </div>
+    <div class="sm:col-span-2">
+      <label class="text-sm text-gray-600">Pretraga (ime / telefon):</label>
+      <div class="mt-2 flex gap-2">
+        <input
+          wire:model.live.debounce.300ms="q"
+          type="text"
+          class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+          placeholder="npr. Marko ili 062..."
+        />
 
+        @if($q)
+          <button
+            type="button"
+            wire:click="$set('q','')"
+            class="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold"
+          >
+            X
+          </button>
+        @endif
       </div>
     </div>
+  </div>
+
+  {{-- STATISTIKA --}}
+  <div class="mt-5 grid grid-cols-2 gap-3">
+    <div class="rounded-xl border border-gray-200 p-4">
+      <div class="text-xs text-gray-500">Ukupno dolazi</div>
+      <div class="text-2xl font-bold text-green-600">
+        {{ $comingCount }}
+      </div>
+    </div>
+  </div>
+</div>
+
 
     {{-- LISTA GOSTIJU --}}
     <div class="mt-6 grid gap-3">
