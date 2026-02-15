@@ -37,40 +37,72 @@
   <div>
     <form wire:submit.prevent="save" class="mt-6 space-y-6">
         {{-- 0) OSNOVNE INFORMACIJE (meta događaja) --}}
-        <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-3">
-    <div class="font-semibold">Lista gostiju (PIN)</div>
-    <p class="text-sm text-gray-600">Klijent otvara link i unosi 4-cifreni PIN.</p>
+       <div class="rounded-2xl border border-gray-200 bg-white p-6 space-y-4">
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+    <div class="text-center">
+        <div class="font-semibold text-lg">Lista gostiju (PIN)</div>
+        <p class="text-sm text-gray-600 mt-1">
+            Klijent otvara link i unosi 4-cifreni PIN.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+
+        {{-- PIN INPUT --}}
         <div>
-            <label class="text-sm font-medium text-gray-700">PIN (4 cifre)</label>
+            <label class="text-sm font-medium text-gray-700">
+                PIN (4 cifre)
+            </label>
+
             <input wire:model.defer="guest_list_pin"
-                   inputmode="numeric" maxlength="4"
+                   inputmode="numeric"
+                   maxlength="4"
                    class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                    placeholder="npr. 1234" />
-            @error('guest_list_pin') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            <p class="mt-1 text-xs text-gray-500">Ako ostane prazno, ne menja se postojeći PIN.</p>
+
+            @error('guest_list_pin')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+
+            <p class="mt-1 text-xs text-gray-500">
+                Ako ostane prazno, ne menja se postojeći PIN.
+            </p>
         </div>
 
-        <div>
-            @if($event)
-                <div class="text-xs text-gray-500 mb-2">Link:</div>
-                <div class="flex gap-2">
-                    <a href="{{ route('public.guests.pin', $event->token) }}" target="_blank"
-                       class="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold">
+        {{-- LINK BLOK --}}
+        @if($event)
+        <div class="space-y-3">
+
+            <div>
+                <div class="text-sm font-medium text-gray-700">Link za klijenta</div>
+
+                <div class="mt-2 flex flex-wrap gap-2">
+                    <a href="{{ route('public.guests.pin', $event->token) }}"
+                       target="_blank"
+                       class="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-gray-50 transition">
                         Otvori
                     </a>
+
                     <button type="button"
-                        class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white"
+                        class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 transition"
                         x-data
-                       @click="navigator.clipboard.writeText(@js(route('public.guests.pin', $event->token)))">
+                        @click="navigator.clipboard.writeText(@js(route('public.guests.pin', $event->token)))">
                         Kopiraj
                     </button>
                 </div>
-            @endif
+            </div>
+
+            {{-- FULL URL --}}
+            <div class="rounded-xl bg-gray-50 border border-gray-200 px-3 py-2 text-xs text-gray-600 break-all">
+                {{ route('public.guests.pin', $event->token) }}
+            </div>
+
         </div>
+        @endif
+
     </div>
 </div>
+
 
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
             <div class="flex items-center justify-between">
