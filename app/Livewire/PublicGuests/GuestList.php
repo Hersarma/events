@@ -11,8 +11,7 @@ use Livewire\Component;
 class GuestList extends Component
 {
     public string $token;
-    public string $filter = 'all'; // all | coming | not_coming
-    public string $q = '';         // ✅ search
+    public string $q = ''; // search
 
     public function mount(string $token): void
     {
@@ -29,16 +28,11 @@ class GuestList extends Component
     {
         $event = Event::where('token', $this->token)->firstOrFail();
 
-        $query = EventRsvp::where('event_id', $event->id);
+        // ✅ UVEK samo oni koji dolaze
+        $query = EventRsvp::where('event_id', $event->id)
+            ->whereIn('status', ['yes', 'couple']);
 
-        // ✅ filter
-        if ($this->filter === 'coming') {
-            $query->whereIn('status', ['yes', 'couple']);
-        } elseif ($this->filter === 'not_coming') {
-            $query->where('status', 'no');
-        }
-
-        // ✅ search (ime / telefon / email)
+        // search (ime / telefon / email)
         $term = trim($this->q);
         if ($term !== '') {
             $query->where(function ($qq) use ($term) {
@@ -48,10 +42,9 @@ class GuestList extends Component
             });
         }
 
-        // ✅ sortiraj praktično za vrata:
-        // kad su "dolaze" ili "svi" -> abeceda, kad su "ne dolaze" može isto abeceda
         $rsvps = $query->orderBy('name')->get();
 
+        // statistika (koliko ukupno dolazi - po guests_count)
         $comingCount = EventRsvp::where('event_id', $event->id)
             ->whereIn('status', ['yes', 'couple'])
             ->sum('guests_count');
