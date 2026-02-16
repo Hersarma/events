@@ -1,6 +1,7 @@
 <?php
 namespace App\Livewire\Events;
 use App\Models\Event;
+use App\Models\EventRsvp;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -443,6 +444,18 @@ public function getPreviewEventProperty(): Event
     $e->rsvp_email = $this->rsvp_email ?: null;
 
     return $e;
+}
+
+public function clearRsvps(): void
+{
+    if (! $this->event) return;
+
+    // ✅ sigurnost: brišemo samo RSVP za ovaj event
+    EventRsvp::where('event_id', $this->event->id)->delete();
+
+    $this->dispatch('flash', message: 'RSVP lista je ispražnjena.', type: 'success');
+
+    // ako ti guest list strana ima cache u session, nije problem — ostaje samo pristup
 }
 
 

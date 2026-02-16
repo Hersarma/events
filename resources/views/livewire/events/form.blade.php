@@ -89,6 +89,13 @@
                         @click="navigator.clipboard.writeText(@js(route('public.guests.pin', $event->token)))">
                         Kopiraj
                     </button>
+                     <button
+                        type="button"
+                        wire:click="clearRsvps"
+                        wire:confirm="Da li si siguran? Ovo briše SVE RSVP potvrde za ovaj događaj."
+                        class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">
+                        Isprazni listu
+                      </button>
                 </div>
             </div>
 
