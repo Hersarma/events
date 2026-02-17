@@ -48,7 +48,7 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
         </div>
         {{-- Card --}}
         <div class="mx-auto mt-8 max-w-xl rounded-lg p-6 sm:p-8"
-            style="background: {{ $rsvpCardBg }}; border: 1px solid {{ $rsvpCardBorder }};">
+            style="background: {{ $rsvpCardBg }}; border: 1px solid {{ $rsvpCardBg }};">
             <div wire:key="rsvp-form-{{ $formKey }}">
                 <form wire:submit.prevent="submit" class="space-y-5">
                     {{-- Ime --}}
