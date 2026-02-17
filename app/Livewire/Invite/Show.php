@@ -40,12 +40,20 @@ class Show extends Component
 
     public function submit(): void
 {
+    $messages = [
+        'name.required'   => data_get($this->event->content, 'rsvp_err_name_required', 'Molimo unesite ime i prezime.'),
+        'phone.required'  => data_get($this->event->content, 'rsvp_err_phone_required', 'Molimo unesite broj telefona.'),
+        'status.required' => data_get($this->event->content, 'rsvp_err_status_required', 'Molimo izaberite jednu opciju.'),
+        'status.in'       => data_get($this->event->content, 'rsvp_err_status_in', 'Neispravan izbor.'),
+        'email.email'     => data_get($this->event->content, 'rsvp_err_email_email', 'Email nije ispravan.'),
+    ];
+
     $this->validate([
         'status' => ['required','in:yes,couple,no'],
-        'name' => ['required', 'string', 'min:2', 'max:80'],
-        'email' => ['nullable', 'email', 'max:120'],
-        'phone' => ['nullable', 'string', 'max:40'],
-    ]);
+        'name'   => ['required', 'string', 'min:2', 'max:80'],
+        'email'  => ['nullable', 'email', 'max:120'],
+        'phone'  => ['required', 'string', 'max:40'], // izbaci nullable
+    ], $messages);
 
     $guests = match ($this->status) {
         'yes' => 1,

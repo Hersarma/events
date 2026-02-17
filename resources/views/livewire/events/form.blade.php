@@ -524,6 +524,31 @@
                         placeholder="Šaljem..." />
                     </div>
                 </div>
+                <div class="rounded-2xl border border-gray-200 p-4 space-y-4">
+  <div class="font-semibold">RSVP forma – poruke grešaka</div>
+
+  <div>
+    <label class="text-sm font-medium text-gray-700">Greška: ime obavezno</label>
+    <input wire:model.live.debounce.500ms="content.rsvp_err_name_required"
+      class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
+      placeholder="Molimo unesite ime i prezime." />
+  </div>
+
+  <div>
+    <label class="text-sm font-medium text-gray-700">Greška: telefon obavezno</label>
+    <input wire:model.live.debounce.500ms="content.rsvp_err_phone_required"
+      class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
+      placeholder="Molimo unesite broj telefona." />
+  </div>
+
+  <div>
+    <label class="text-sm font-medium text-gray-700">Greška: status obavezno</label>
+    <input wire:model.live.debounce.500ms="content.rsvp_err_status_required"
+      class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
+      placeholder="Molimo izaberite jednu opciju." />
+  </div>
+</div>
+
             </div>
             <div class="rounded-2xl border border-gray-200 p-4 space-y-4">
                 <h3 class="font-semibold">RSVP sekcija – stil</h3>
