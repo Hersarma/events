@@ -46,8 +46,6 @@ x-data="{
 
       if (v1) {
         
-        
-
         const onEnd = () => {
           this.afterFirst = true;
 

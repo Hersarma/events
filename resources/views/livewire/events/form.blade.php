@@ -537,19 +537,16 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Opcija: YES</label>
                         <input wire:model.live.debounce.500ms="content.rsvp_opt_yes"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Dolazim sam" />
                     </div>
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Opcija: MAYBE</label>
                         <input wire:model.live.debounce.500ms="content.rsvp_opt_maybe"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Dolazim u dvoje" />
                     </div>
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Opcija: NO</label>
                         <input wire:model.live.debounce.500ms="content.rsvp_opt_no"
                         class="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-gray-200"
                         placeholder="Ne dolazim" />
