@@ -22,7 +22,7 @@
           preload="metadata"
           muted
         >
-          <source src="{{ asset('storage/'.$event->hero_video_path) }}" type="video/mp4">
+          <source src="{{ asset('storage/'.$event->hero_video_path) }}#t=0.001" type="video/mp4">
         </video>
       @endif
 
@@ -38,7 +38,7 @@
           muted
           loop
         >
-          <source src="{{ asset('storage/'.$event->hero_video_2_path) }}" type="video/mp4">
+          <source src="{{ asset('storage/'.$event->hero_video_2_path) }}#t=0.001" type="video/mp4">
         </video>
       @endif
 
