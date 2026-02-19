@@ -40,13 +40,13 @@ x-data="{
 
       if (v2) {
         v2.pause();
-        v2.currentTime = 0;
+        
         v2.muted = true;
       }
 
       if (v1) {
-        v1.pause();
-        v1.currentTime = 0;
+        
+        
 
         const onEnd = () => {
           this.afterFirst = true;

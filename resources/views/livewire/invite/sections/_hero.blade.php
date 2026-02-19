@@ -64,7 +64,7 @@
   @endif
 
   {{-- klik bilo gde --}}
-  <div x-show="requiresClick && !opened" class="absolute inset-0">
+  <div x-show="requiresClick && !opened" @click.stop.prevent="open()" class="absolute inset-0">
     <button
       type="button"
       class="absolute inset-0 cursor-pointer"
