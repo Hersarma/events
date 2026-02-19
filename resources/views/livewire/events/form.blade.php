@@ -224,9 +224,54 @@
                       <source src="{{ asset('storage/'.$hero_video_path) }}" type="video/mp4">
                     </video>
                   </div>
+                  <button type="button"
+                  wire:click="removeHeroVideo"
+                  wire:confirm="Obrisati drugi video?"
+                  class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">
+                  Ukloni video 1
+                </button>
                 @endif
 
             </div>
+           <div class="space-y-2">
+  <label class="text-sm font-medium text-gray-700">Hero video 2 (MP4) – posle prvog (loop)</label>
+
+  <input type="file" accept="video/mp4" wire:model="hero_video_2"
+    class="block w-full text-sm text-gray-700 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-white file:text-sm file:font-semibold" />
+
+  @error('hero_video_2') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
+
+  <div wire:loading wire:target="hero_video_2" class="text-sm text-gray-600">
+    Uploadujem video...
+  </div>
+
+  {{-- Preview odmah nakon izbora fajla --}}
+  @if($hero_video_2)
+    @php $k2 = md5($hero_video_2->getFilename() . '|' . $hero_video_2->getSize()); @endphp
+
+    <div class="rounded-2xl border border-gray-200 overflow-hidden">
+      <video wire:key="hero2-video-upload-{{ $k2 }}" class="w-40 h-80 object-cover" controls playsinline muted>
+        <source src="{{ $hero_video_2->temporaryUrl() }}" type="video/mp4">
+      </video>
+    </div>
+
+  @elseif($hero_video_2_path)
+    <div class="rounded-2xl border border-gray-200 overflow-hidden">
+      <video wire:key="hero2-video-stored-{{ md5($hero_video_2_path) }}" class="w-40 h-80 object-cover" controls playsinline muted>
+        <source src="{{ asset('storage/'.$hero_video_2_path) }}" type="video/mp4">
+      </video>
+    </div>
+
+    <button type="button"
+      wire:click="removeHeroVideo2"
+      wire:confirm="Obrisati prvi video?"
+      class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">
+      Ukloni video 2
+    </button>
+  @endif
+</div>
+
+
             {{-- Image upload --}}
             <div class="space-y-2">
                 <label class="text-sm font-medium text-gray-700">Hero slika (JPG/PNG) – opciono</label>

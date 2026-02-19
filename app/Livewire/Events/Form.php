@@ -52,6 +52,7 @@ public string $rsvp_button_text = '#ffffff';
 public string $footer_text_color = '#ffffff';
 /** uploads */
 public $hero_video = null;     // mp4
+public $hero_video_2 = null;
 public $hero_image = null;     // jpg/png
 public $map_image  = null;     // jpg/png
 public $location_marker = null; // png
@@ -59,6 +60,7 @@ public $location_marker = null; // png
 /** stored paths */
 public ?string $location_marker_path = null;
 public ?string $hero_video_path = null;
+public ?string $hero_video_2_path = null;
 public ?string $hero_image_path = null;
 public ?string $map_image_path = null;
 public string $token = '';
@@ -85,6 +87,7 @@ $this->is_active = (bool) $event->is_active;
 $this->expires_at = $event->expires_at?->format('Y-m-d\TH:i');
 $this->hero_type = $event->hero_type ?: 'video';
 $this->hero_video_path = $event->hero_video_path;
+$this->hero_video_2_path = $event->hero_video_2_path;
 $this->hero_image_path = $event->hero_image_path;
 $this->map_image_path = $event->map_image_path;
 $this->location_marker_path = $event->location_marker_path;
@@ -153,6 +156,7 @@ $this->validate([
 'expires_at' => ['nullable', 'date'],
 'hero_type' => ['required', 'in:video,image'],
 'hero_video' => ['nullable', 'file', 'mimetypes:video/mp4', 'max:51200'],
+'hero_video_2' => ['nullable', 'file', 'mimetypes:video/mp4', 'max:51200'],
 'hero_image' => ['nullable', 'image', 'max:10240'],
 'map_image'  => ['nullable', 'image', 'max:10240'],
 'location_bg' => ['required','string','max:20'],
@@ -221,6 +225,13 @@ if ($this->hero_video) {
 if ($this->event?->hero_video_path) Storage::disk('public')->delete($this->event->hero_video_path);
 $this->hero_video_path = $this->hero_video->store('invites', 'public');
 }
+if ($this->hero_video_2) {
+    if ($this->event?->hero_video_2_path) {
+        Storage::disk('public')->delete($this->event->hero_video_2_path);
+    }
+    $this->hero_video_2_path = $this->hero_video_2->store('invites', 'public');
+}
+
 if ($this->hero_image) {
 if ($this->event?->hero_image_path) Storage::disk('public')->delete($this->event->hero_image_path);
 $this->hero_image_path = $this->hero_image->store('invites', 'public');
@@ -246,6 +257,7 @@ $payload = [
 'expires_at' => $this->expires_at ? now()->parse($this->expires_at) : null,
 'hero_type' => $this->hero_type,
 'hero_video_path' => $this->hero_video_path,
+'hero_video_2_path' => $this->hero_video_2_path,
 'hero_image_path' => $this->hero_image_path,
 'map_image_path' => $this->map_image_path,
 
@@ -264,7 +276,7 @@ $event = $this->event
 $this->event = $event;
 $this->slug = $event->slug;
 $this->token = $event->token;
-$this->reset('hero_video', 'hero_image', 'map_image', 'location_marker');
+$this->reset('hero_video', 'hero_video_2', 'hero_image', 'map_image', 'location_marker');
 session()->flash('status', 'Događaj je sačuvan.');
 $this->redirectRoute('events.edit', $event, navigate: true);
 }
@@ -351,6 +363,21 @@ $this->event->update([
 ]);
 $this->dispatch('flash', message: 'Hero video je uklonjen.', type: 'success');
 }
+public function removeHeroVideo2(): void
+{
+    if (! $this->event) return;
+
+    if ($this->event->hero_video_2_path) {
+        Storage::disk('public')->delete($this->event->hero_video_2_path);
+    }
+
+    $this->hero_video_2 = null;
+    $this->hero_video_2_path = null;
+    $this->event->update(['hero_video_2_path' => null]);
+
+    $this->dispatch('flash', message: 'Drugi video je uklonjen.', type: 'success');
+}
+
 public function removeHeroImage(): void
 {
 if (! $this->event) return;

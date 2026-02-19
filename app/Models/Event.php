@@ -29,6 +29,8 @@ class Event extends Model
 
         'hero_type',
         'hero_video_path',
+        'hero_video_2_path',
+
         'hero_image_path',
         'map_image_path',
 

@@ -1,46 +1,68 @@
 {{-- resources/views/livewire/invite/show.blade.php --}}
 <div
     x-data="{
+    afterFirst: false,
     opened: false,
     requiresClick: @js($event->hero_type === 'video' && (bool) $event->hero_video_path),
     lock() { document.documentElement.classList.add('overflow-hidden'); },
     unlock() { document.documentElement.classList.remove('overflow-hidden'); },
     open() {
-    this.opened = true;
-    this.unlock();
-    const v = document.getElementById('inviteVideo');
-    if (v) {
-    const p = v.play();
-    if (p && p.catch) p.catch(() => {});
-    }
-    this.$nextTick(() => this.revealTextInit());
-    },
-    revealTextInit() {
-    const els = document.querySelectorAll('[data-reveal-text]');
-    if (!('IntersectionObserver' in window)) {
-    els.forEach(el => el.classList.add('is-visible'));
-    return;
-    }
-    const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-    if (entry.isIntersecting) {
-    entry.target.classList.add('is-visible');
-    io.unobserve(entry.target);
-    }
-    });
-    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
-    els.forEach(el => io.observe(el));
-    },
-    init() {
-    if (this.requiresClick) {
+  this.opened = true;
+  this.unlock();
+
+  const v1 = document.getElementById('inviteVideo');
+  const v2 = document.getElementById('inviteVideo2');
+
+  // reset stanja svaki put kad se otvori
+  this.afterFirst = false;
+
+  // pripremi video2 (da krene brzo kad dođe momenat)
+  if (v2) {
+    v2.pause();
+    v2.currentTime = 0;
+    v2.muted = true;
+  }
+
+  if (v1) {
+    v1.pause();
+    v1.currentTime = 0;
+
+    const onEnd = () => {
+      // preklop UI (fade u blade-u preko afterFirst)
+      this.afterFirst = true;
+
+      // pusti drugi (loop)
+      this.$nextTick(() => {
+        if (v2) {
+          const p2 = v2.play();
+          if (p2 && p2.catch) p2.catch(() => {});
+        }
+      });
+
+      v1.removeEventListener('ended', onEnd);
+    };
+
+    v1.addEventListener('ended', onEnd);
+
+    const p1 = v1.play();
+    if (p1 && p1.catch) p1.catch(() => {});
+  }
+
+  this.$nextTick(() => this.revealTextInit());
+},
+init() {
+  // na reload uvek sve od početka
+  this.afterFirst = false;
+
+  if (this.requiresClick) {
     this.lock();
     this.opened = false;
-    } else {
+  } else {
     this.unlock();
     this.opened = true;
     this.$nextTick(() => this.revealTextInit());
-    }
-    }
+  }
+}
     }"
     x-init="init()"
     class="min-h-screen scroll-smooth bg-white"

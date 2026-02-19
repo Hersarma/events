@@ -10,4 +10,6 @@ will-change: opacity, transform;
 opacity: 1;
 transform: translateY(0);
 }
+[x-cloak] { display: none !important; }
+
 </style>
