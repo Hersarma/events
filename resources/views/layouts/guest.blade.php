@@ -9,6 +9,7 @@
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="{{ asset('images/logo2.png') }}">
+        <meta name="robots" content="noindex, nofollow, noarchive">
 
         <title>{{ config('app.name', 'Invites') }}</title>
 
