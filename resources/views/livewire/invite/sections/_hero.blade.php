@@ -20,7 +20,6 @@
           :class="(opened && afterFirst) ? 'opacity-0' : 'opacity-100'"
           playsinline
           preload="metadata"
-          muted
         >
           <source src="{{ asset('storage/'.$event->hero_video_path) }}#t=0.001" type="video/mp4">
         </video>
@@ -35,7 +34,6 @@
           :class="(opened && afterFirst) ? 'opacity-100' : 'opacity-0'"
           playsinline
           preload="metadata"
-          muted
           loop
         >
           <source src="{{ asset('storage/'.$event->hero_video_2_path) }}#t=0.001" type="video/mp4">
