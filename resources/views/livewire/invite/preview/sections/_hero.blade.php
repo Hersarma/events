@@ -38,7 +38,6 @@
       class="h-full w-full object-cover"
       playsinline
       preload="metadata"
-      muted
       autoplay
       loop
     >
@@ -60,7 +59,6 @@
       class="h-full w-full object-cover"
       playsinline
       preload="metadata"
-      muted
       autoplay
       loop
     >

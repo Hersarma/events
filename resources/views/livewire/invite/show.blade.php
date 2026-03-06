@@ -41,7 +41,7 @@ x-data="{
       if (v2) {
         v2.pause();
         
-        v2.muted = true;
+        v2.muted = false;
       }
 
       if (v1) {

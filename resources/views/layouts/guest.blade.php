@@ -8,7 +8,7 @@
         <meta property="og:description" content="Digitalna pozivnica za vaš poseban dan">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">
-        <meta property="og:image" content="{{ asset('images/logo2.png') }}">
+        <meta property="og:image" content="{{ asset('images/linklogo.jpeg') }}">
         <meta name="robots" content="noindex, nofollow, noarchive">
 
         <title>{{ config('app.name', 'Invites') }}</title>
