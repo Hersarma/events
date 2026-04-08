@@ -3,7 +3,7 @@
 x-data="{
     afterFirst: false,
     opened: false,
-    requiresClick: @js($event->hero_type === 'video' && (bool) $event->hero_video_path),
+    requiresClick: @js((bool) $event->hero_video_path),
 
     lock() { document.documentElement.classList.add('overflow-hidden'); },
     unlock() { document.documentElement.classList.remove('overflow-hidden'); },
@@ -30,43 +30,50 @@ x-data="{
     },
 
     open() {
-      this.opened = true;
-      this.unlock();
+  this.opened = true;
+  this.unlock();
 
-      const v1 = document.getElementById('inviteVideo');
-      const v2 = document.getElementById('inviteVideo2');
+  const v1 = document.getElementById('inviteVideo');
+  const v2 = document.getElementById('inviteVideo2');
 
-      this.afterFirst = false;
+  this.afterFirst = false;
 
-      if (v2) {
-        v2.pause();
-        
-        v2.muted = false;
-      }
+  if (v2) {
+    v2.pause();
+    v2.currentTime = 0;
+    v2.muted = false;
+    v2.volume = 1;
+  }
 
-      if (v1) {
-        
-        const onEnd = () => {
-          this.afterFirst = true;
+  if (v1) {
+    v1.currentTime = 0;
+    v1.muted = false;
+    v1.volume = 1;
 
-          this.$nextTick(() => {
-            if (v2) {
-              const p2 = v2.play();
-              if (p2 && p2.catch) p2.catch(() => {});
-            }
-          });
+    const onEnd = () => {
+      this.afterFirst = true;
 
-          v1.removeEventListener('ended', onEnd);
-        };
+      this.$nextTick(() => {
+        if (v2) {
+          v2.muted = false;
+          v2.volume = 1;
 
-        v1.addEventListener('ended', onEnd);
+          const p2 = v2.play();
+          if (p2 && p2.catch) p2.catch(() => {});
+        }
+      });
 
-        const p1 = v1.play();
-        if (p1 && p1.catch) p1.catch(() => {});
-      }
+      v1.removeEventListener('ended', onEnd);
+    };
 
-      this.$nextTick(() => this.revealTextInit());
-    },
+    v1.addEventListener('ended', onEnd);
+
+    const p1 = v1.play();
+    if (p1 && p1.catch) p1.catch(() => {});
+  }
+
+  this.$nextTick(() => this.revealTextInit());
+},
 
     init() {
       this.afterFirst = false;
