@@ -100,11 +100,11 @@ x-data="{
     $py = 'py-12';
     @endphp
     <div class="min-h-screen bg-neutral-100 lg:flex lg:items-center lg:justify-center">
-        <div class="w-full bg-white lg:w-[460px] lg:rounded-[32px] lg:overflow-hidden lg:shadow-xl">
+        <div class="w-full bg-white lg:w-[560px] lg:rounded-[32px] lg:overflow-hidden lg:shadow-xl">
             {{-- HERO --}}
             @include('livewire.invite.sections._hero', ['event' => $event])
             {{-- CONTENT (tek nakon klika) --}}
-            <div x-show="opened" x-transition.opacity.duration.300ms class="">
+            <div x-cloak x-show="opened" x-transition.opacity.duration.300ms>
                 @include('livewire.invite.sections._intro', ['event' => $event, 'c' => $c, 's' => $s])
                 @include('livewire.invite.sections._date', [
                 'event' => $event, 's' => $s, 'c' => $c, 'h' => $h, 'py' => $py

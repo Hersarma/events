@@ -52,7 +52,7 @@ class Show extends Component
         'status' => ['required','in:yes,couple,no'],
         'name'   => ['required', 'string', 'min:2', 'max:80'],
         'email'  => ['nullable', 'email', 'max:120'],
-        'phone'  => ['required', 'string', 'max:40'], // izbaci nullable
+        'phone'  => ['required', 'int', 'max:40'], // izbaci nullable
     ], $messages);
 
     $guests = match ($this->status) {

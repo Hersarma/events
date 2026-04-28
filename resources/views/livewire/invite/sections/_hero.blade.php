@@ -1,5 +1,8 @@
 {{-- resources/views/livewire/invite/sections/_hero.blade.php --}}
-<section class="relative h-screen w-full overflow-hidden">
+<section
+  class="relative w-full overflow-hidden transition-all duration-700"
+  :class="afterFirst ? 'aspect-[9/16]' : 'h-screen'"
+>
 
   @if($event->hero_video_path)
     <div class="absolute inset-0">
@@ -20,7 +23,7 @@
         <video
           id="inviteVideo2"
           x-cloak
-          class="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+          class="absolute inset-0 h-full w-full transition-opacity duration-700"
           :class="afterFirst ? 'opacity-100' : 'opacity-0'"
           playsinline
           preload="metadata"
@@ -63,11 +66,12 @@
 
   {{-- Scroll hint --}}
   <div
+  x-cloak
   x-show="opened && afterFirst"
   x-transition.opacity
   class="pointer-events-none absolute bottom-20 left-0 right-0 flex flex-col items-center justify-center"
 >
-  <span class="mb-1 block text-xs font-bold uppercase tracking-[0.25em] text-white/80">
+  <span class="mb-1 block text-xs font-black uppercase tracking-[0.25em] text-white [-webkit-text-stroke:0.35px_currentColor]">
   scroll
 </span>
 
@@ -77,7 +81,7 @@
 </div>
 
   {{-- klik bilo gde --}}
-  <div x-show="requiresClick && !opened" @click.stop.prevent="open()" class="absolute inset-0">
+  <div x-cloak x-show="requiresClick && !opened" @click.stop.prevent="open()" class="absolute inset-0">
     <button
       type="button"
       class="absolute inset-0 cursor-pointer"

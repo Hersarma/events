@@ -10,7 +10,7 @@
 
 <div
   x-data="{ opened: true, requiresClick: false }"
-  class="mx-auto w-full max-w-[460px] bg-white
+  class="mx-auto w-full max-w-[560px] bg-white
          lg:rounded-[32px] lg:shadow-xl lg:border
          lg:h-[calc(100vh-1.5rem)] lg:overflow-y-auto overflow-x-hidden"
 >
