@@ -73,6 +73,12 @@ class Event extends Model
         return Str::lower(Str::random(6) . '-' . Str::random(6));
     }
 
+    public function guests()
+{
+    return $this->hasMany(EventGuest::class);
+}
+
+
     
 
 }

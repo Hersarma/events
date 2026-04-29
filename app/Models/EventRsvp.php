@@ -19,10 +19,16 @@ class EventRsvp extends Model
         'note',
         'ip_address',
         'user_agent',
+        'event_guest_id',
+        'responded_at',
     ];
 
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
+    public function invitedGuest()
+{
+    return $this->belongsTo(EventGuest::class, 'event_guest_id');
+}
 }

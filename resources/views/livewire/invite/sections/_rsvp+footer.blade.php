@@ -63,18 +63,60 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                         />
                         @error('name') <p class="mt-1 text-base text-red-700">{{ $message }}</p> @enderror
                     </div>
-                    {{-- Telefon --}}
-                    <div>
-                        <label class="block text-base font-medium" style="color: {{ $rsvpLabelColor }};">
-                            {{ $phoneLabel }}
-                        </label>
-                        <input
-                        wire:model.defer="phone"
-                        class="mt-2 w-full px-4 py-3 outline-none"
-                        style="background: {{ $rsvpInputBg }}; border: 1px solid {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
-                        />
-                        @error('phone') <p class="mt-1 text-base text-red-700">{{ $message }}</p> @enderror
-                    </div>
+                   {{-- Telefon --}}
+<div>
+    <label class="block text-base font-medium" style="color: {{ $rsvpLabelColor }};">
+        {{ $phoneLabel }}
+    </label>
+
+    <div
+        class="mt-2 flex overflow-hidden"
+        style="background: {{ $rsvpInputBg }}; border: 1px solid {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
+    >
+        <div
+            class="flex items-center border-r px-4 py-3 text-base font-semibold"
+            style="border-color: {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
+        >
+            +
+        </div>
+
+        <input
+            wire:model.defer="phone_country"
+            type="text"
+            inputmode="numeric"
+            class="rsvp-phone-input w-24 border-0 border-r px-3 py-3 text-base outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:shadow-none"
+            style="background: {{ $rsvpInputBg }}; border-right-color: {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
+            placeholder="pozivni"
+        />
+
+        <input
+            wire:model.defer="phone_number"
+            type="text"
+            inputmode="tel"
+            autocomplete="tel"
+            class="rsvp-phone-input min-w-0 flex-1 border-0 px-3 py-3 text-base outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:shadow-none"
+            style="background: {{ $rsvpInputBg }}; color: {{ $rsvpInputText }};"
+            placeholder="broj telefona"
+        />
+    </div>
+
+    <p class="mt-2 text-sm" style="color: {{ $rsvpLabelColor }};">
+        Unesite pozivni broj države i broj telefona. Primjer: +385 91 123 4567.
+    </p>
+
+    @error('phone_country')
+        <p class="mt-1 text-base text-red-700">{{ $message }}</p>
+    @enderror
+
+    @error('phone_number')
+        <p class="mt-1 text-base text-red-700">{{ $message }}</p>
+    @enderror
+    @if($successMessage)
+    <p class="mt-2 text-base font-medium text-green-700">
+        {{ $successMessage }}
+    </p>
+@endif
+</div>
                     {{-- Radio status (kao na slici, levo poravnato) --}}
                     <div class="space-y-3 pt-1">
                         @foreach([ 'yes' => $optYes, 'couple' => $optCouple, 'no' => $optNo ] as $k => $label)
