@@ -167,21 +167,29 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
         
         {{-- Footer --}}
         <div class="mt-10 text-center">
-            {{-- LOGO (uvek iz images foldera) --}}
-            <img
+    {{-- LOGO --}}
+    <a
+        href="https://www.instagram.com/dianasgardendesign?igsh=eGg2ZDVzcGs5N201"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block"
+    >
+        <img
             src="{{ asset('images/logo2.png') }}"
-            alt="Logo"
+            alt="Diana's Garden Design Instagram"
             class="mx-auto h-16 w-16 object-contain p-2"
-            >
-            {{-- FOOTER TEKST --}}
-            <p class="text-xs uppercase tracking-widest pt-2"
-                style="color: {{ $footerTextColor }};">
-                invitations by
-            </p>
-            <p class="text-xs uppercase tracking-widest"
-                style="color: {{ $footerTextColor }};">
-                dianas garden studio
-            </p>
-        </div>
+        >
+    </a>
+
+    {{-- FOOTER TEKST --}}
+    <p class="text-xs uppercase tracking-widest pt-2"
+        style="color: {{ $footerTextColor }};">
+        invitations by
+    </p>
+    <p class="text-xs uppercase tracking-widest"
+        style="color: {{ $footerTextColor }};">
+        dianas garden studio
+    </p>
+</div>
     </div>
 </section>
