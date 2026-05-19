@@ -89,7 +89,7 @@ class Show extends Component
             ->first();
 
         if (!$invitedGuest) {
-            $this->addError('phone_number', 'Broj telefona nije pronađen na popisu pozvanih gostiju.');
+            $this->addError('phone_number', 'Pogrešan broj ili broj nije na listi gostiju..');
             return;
         }
 
