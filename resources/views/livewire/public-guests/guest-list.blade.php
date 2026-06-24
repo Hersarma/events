@@ -1,12 +1,70 @@
-<div class="min-h-screen bg-neutral-100 px-4 py-8 sm:px-6 sm:py-10">
-    <div class="mx-auto w-full max-w-4xl space-y-6">
+<div
+    class="guest-list-page min-h-screen bg-neutral-100 px-4 py-8 sm:px-6 sm:py-10"
+    x-data="{
+        printFilter: 'all',
+        printList(filter) {
+            this.printFilter = filter;
+            document.body.dataset.printGuestFilter = filter;
+            this.$nextTick(() => window.print());
+        }
+    }"
+>
+    <div class="guest-list-content mx-auto w-full max-w-4xl space-y-6">
 
         {{-- HEADER --}}
-        <div class="rounded-2xl border border-gray-200 bg-white p-6">
-            <div>
-                <div class="text-xl font-bold text-gray-900">{{ $event->title }}</div>
-                <div class="mt-1 text-sm text-gray-600">
-                    Popis pozvanih gostiju i potvrda dolaska
+        <div class="no-print rounded-2xl border border-gray-200 bg-white p-6">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                    <div class="text-xl font-bold text-gray-900">{{ $event->title }}</div>
+                    <div class="mt-1 text-sm text-gray-600">
+                        Popis pozvanih gostiju i potvrda dolaska
+                    </div>
+                </div>
+
+                <div class="no-print relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button
+                        type="button"
+                        @click="open = !open"
+                        class="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+                    >
+                        Štampaj listu
+                    </button>
+
+                    <div
+                        x-cloak
+                        x-show="open"
+                        x-transition
+                        class="absolute z-10 mt-2 w-48 rounded-xl border border-gray-200 bg-white p-2 shadow-lg"
+                    >
+                        <button
+                            type="button"
+                            @click="open = false; printList('coming')"
+                            class="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                        >
+                            Dolaze
+                        </button>
+                        <button
+                            type="button"
+                            @click="open = false; printList('not-coming')"
+                            class="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                        >
+                            Ne dolaze
+                        </button>
+                        <button
+                            type="button"
+                            @click="open = false; printList('unanswered')"
+                            class="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                        >
+                            Nisu odgovorili
+                        </button>
+                        <button
+                            type="button"
+                            @click="open = false; printList('all')"
+                            class="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                        >
+                            Svi gosti
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -43,7 +101,7 @@
         </div>
 
         {{-- FORMA ZA DODAVANJE GOSTA --}}
-        <div class="rounded-2xl border border-gray-200 bg-white p-6" wire:key="guest-form-{{ $formKey }}">
+        <div class="no-print rounded-2xl border border-gray-200 bg-white p-6" wire:key="guest-form-{{ $formKey }}">
             <div class="mb-4">
                 <div class="text-lg font-bold text-gray-900">
                     {{ $editingId ? 'Uređivanje gosta' : 'Dodaj gosta' }}
@@ -157,7 +215,7 @@
         </div>
 
         {{-- SEARCH --}}
-        <div class="rounded-2xl border border-gray-200 bg-white p-6">
+        <div class="no-print rounded-2xl border border-gray-200 bg-white p-6">
             <label class="text-sm font-medium text-gray-700">Pretraga gostiju</label>
             <div class="mt-2 flex gap-2">
                 <input
@@ -179,14 +237,56 @@
             </div>
         </div>
 
+        {{-- PRINT LISTA ZA ULAZ --}}
+        <div class="print-only">
+            <h1 class="print-heading print-heading-all">Lista gostiju</h1>
+            <h1 class="print-heading print-heading-coming">Lista gostiju - dolaze</h1>
+            <h1 class="print-heading print-heading-not-coming">Lista gostiju - ne dolaze</h1>
+            <h1 class="print-heading print-heading-unanswered">Lista gostiju - nisu odgovorili</h1>
+
+            <table class="door-list">
+                <thead>
+                    <tr>
+                        <th class="number-cell">#</th>
+                        <th>Ime i prezime</th>
+                        <th class="phone-cell">Telefon</th>
+                        <th class="check-cell">Došao/la</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($printGuests as $guest)
+                        @php
+                            $printStatus = $guest->rsvp?->status;
+                            $printGroup = in_array($printStatus, ['yes', 'couple'], true)
+                                ? 'coming'
+                                : ($printStatus === 'no' ? 'not-coming' : 'unanswered');
+                        @endphp
+
+                        <tr data-print-group="{{ $printGroup }}">
+                            <td class="number-cell">{{ $loop->iteration }}.</td>
+                            <td>{{ $guest->full_name }}</td>
+                            <td class="phone-cell">{{ $guest->phone }}</td>
+                            <td class="check-cell">
+                                <span class="arrival-box"></span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3">Nema unesenih gostiju.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
         {{-- LISTA GOSTIJU --}}
-        <div class="grid gap-3">
+        <div class="no-print grid gap-3">
             @forelse($guests as $guest)
                 @php
                     $rsvp = $guest->rsvp;
                 @endphp
 
-                <div class="rounded-2xl border border-gray-200 bg-white p-5">
+                <div class="guest-card rounded-2xl border border-gray-200 bg-white p-5">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
                         <div>
@@ -244,7 +344,7 @@
                             @endif
                         </div>
 
-                        <div class="flex shrink-0 gap-2 sm:flex-col">
+                        <div class="no-print flex shrink-0 gap-2 sm:flex-col">
                             <button
                                 type="button"
                                 wire:click="editGuest({{ $guest->id }})"
@@ -273,4 +373,126 @@
         </div>
 
     </div>
+
+    <style>
+        .print-only {
+            display: none;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        @media print {
+            @page {
+                margin: 14mm;
+            }
+
+            body {
+                background: #ffffff !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            .print-heading {
+                display: none;
+            }
+
+            body[data-print-guest-filter="all"] .print-heading-all,
+            body:not([data-print-guest-filter]) .print-heading-all,
+            body[data-print-guest-filter="coming"] .print-heading-coming,
+            body[data-print-guest-filter="not-coming"] .print-heading-not-coming,
+            body[data-print-guest-filter="unanswered"] .print-heading-unanswered {
+                display: block;
+            }
+
+            body[data-print-guest-filter="coming"] .door-list tbody tr:not([data-print-group="coming"]),
+            body[data-print-guest-filter="not-coming"] .door-list tbody tr:not([data-print-group="not-coming"]),
+            body[data-print-guest-filter="unanswered"] .door-list tbody tr:not([data-print-group="unanswered"]) {
+                display: none;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .guest-list-page {
+                background: #ffffff !important;
+                min-height: auto !important;
+                padding: 0 !important;
+            }
+
+            .guest-list-content {
+                max-width: none !important;
+                width: 100% !important;
+            }
+
+            .print-only h1 {
+                margin: 0 0 10px;
+                color: #111827;
+                font-size: 22px;
+                font-weight: 800;
+                line-height: 1.2;
+                text-align: center;
+            }
+
+            .door-list {
+                counter-reset: guest-row;
+                width: 100%;
+                border-collapse: collapse;
+                color: #111827;
+                font-size: 12px;
+            }
+
+            .door-list tbody tr {
+                counter-increment: guest-row;
+            }
+
+            .door-list th,
+            .door-list td {
+                border: 1px solid #111827;
+                padding: 5px 7px;
+                vertical-align: middle;
+                line-height: 1.15;
+            }
+
+            .door-list th {
+                font-weight: 700;
+                text-align: left;
+            }
+
+            .number-cell {
+                width: 34px;
+                text-align: center !important;
+            }
+
+            .door-list tbody .number-cell {
+                font-size: 0;
+            }
+
+            .door-list tbody .number-cell::before {
+                content: counter(guest-row) ".";
+                font-size: 12px;
+            }
+
+            .phone-cell {
+                width: 130px;
+                white-space: nowrap;
+            }
+
+            .check-cell {
+                width: 68px;
+                text-align: center !important;
+            }
+
+            .arrival-box {
+                display: inline-block;
+                width: 15px;
+                height: 15px;
+                border: 2px solid #111827;
+            }
+        }
+    </style>
 </div>

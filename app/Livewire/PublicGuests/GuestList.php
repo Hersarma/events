@@ -231,6 +231,11 @@ class GuestList extends Component
             ->orderBy('full_name')
             ->get();
 
+        $printGuests = EventGuest::where('event_id', $this->event->id)
+            ->with('rsvp')
+            ->orderBy('full_name')
+            ->get();
+
         $comingCount = EventGuest::where('event_id', $this->event->id)
             ->whereHas('rsvp', function ($q) {
                 $q->whereIn('status', ['yes', 'couple']);
@@ -250,6 +255,7 @@ class GuestList extends Component
         return view('livewire.public-guests.guest-list', [
             'event' => $this->event,
             'guests' => $guests,
+            'printGuests' => $printGuests,
             'comingCount' => $comingCount,
             'invitedCount' => $invitedCount,
             'answeredCount' => $answeredCount,
