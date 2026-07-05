@@ -47,49 +47,37 @@ class GuestQrController extends Controller
 
     private function makeQrCardSvg(string $qrSvg, Event $event, EventGuest $guest): string
     {
-        $eventTitle = $this->svgText(Str::limit($event->title, 48));
-        $guestName = $this->svgText(Str::limit($guest->full_name, 42));
-        $guestPhone = $this->svgText($guest->phone);
+        $eventTitle = $this->svgText(Str::upper(Str::limit($event->title, 36)));
+        $guestName = $this->svgText(Str::upper(Str::limit($guest->full_name, 32)));
         $guestCount = (int) ($guest->rsvp?->guests_count ?: 1);
-        $guestCountText = $this->svgText($guestCount . ' osoba');
+        $guestCountText = $this->svgText('Potvrđeno: ' . $guestCount . ' ' . ($guestCount === 1 ? 'osoba' : 'osobe'));
         $qrDataUri = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
         return <<<SVG
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="980" viewBox="0 0 760 980">
-  <rect width="760" height="980" fill="#f7f2ec"/>
-  <rect x="44" y="44" width="672" height="892" rx="28" fill="#ffffff" stroke="#d8cdbd" stroke-width="3"/>
+  <rect width="760" height="980" fill="#ffffff"/>
+  <rect x="40" y="40" width="680" height="900" rx="86" fill="#ffffff" stroke="#000000" stroke-width="2.4"/>
 
-  <text x="380" y="108" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" letter-spacing="4" fill="#6f7c72">
-    QR KOD ZA ULAZ
-  </text>
-
-  <text x="380" y="160" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#111827">
+  <text x="380" y="154" text-anchor="middle" font-family="Montserrat, Arial, Helvetica, sans-serif" font-size="34" font-weight="500" letter-spacing="8" fill="#000000">
     {$guestName}
   </text>
 
-  <text x="380" y="202" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#6b7280">
+  <text x="380" y="196" text-anchor="middle" font-family="Montserrat, Arial, Helvetica, sans-serif" font-size="22" font-weight="500" letter-spacing="6" fill="#000000">
     {$eventTitle}
   </text>
 
-  <rect x="142" y="254" width="476" height="476" rx="22" fill="#ffffff" stroke="#111827" stroke-width="2"/>
-  <image href="{$qrDataUri}" x="170" y="282" width="420" height="420"/>
+  <rect x="140" y="276" width="480" height="480" rx="22" fill="#ffffff" stroke="#303640" stroke-width="2"/>
+  <image href="{$qrDataUri}" x="170" y="306" width="420" height="420"/>
 
-  <g font-family="Arial, Helvetica, sans-serif" fill="#111827">
-    <text x="380" y="790" text-anchor="middle" font-size="22" font-weight="700">
-      Pokažite ovaj kod na ulazu
+  <g font-family="Montserrat, Arial, Helvetica, sans-serif" fill="#000000">
+    <text x="380" y="838" text-anchor="middle" font-size="24" font-weight="500" letter-spacing="6">
+      POKAŽITE KOD NA ULAZU
     </text>
-    <text x="380" y="832" text-anchor="middle" font-size="18" fill="#6b7280">
-      Telefon: {$guestPhone}
-    </text>
-    <text x="380" y="866" text-anchor="middle" font-size="18" fill="#6b7280">
-      Potvrđeno: {$guestCountText}
+    <text x="380" y="884" text-anchor="middle" font-size="23" font-weight="500" letter-spacing="2.5">
+      {$guestCountText}
     </text>
   </g>
-
-  <text x="380" y="918" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#9ca3af">
-    DIANA'S GARDEN STUDIO
-  </text>
 </svg>
 SVG;
     }
