@@ -17,11 +17,17 @@ class Pin extends Component
     public function mount(string $token): void
     {
         $this->token = $token;
+
+        $event = Event::where('token', $this->token)->firstOrFail();
+
+        if (!($event->enable_guest_list ?? true)) abort(404);
     }
 
     public function submit()
     {
         $event = Event::where('token', $this->token)->firstOrFail();
+
+        if (!($event->enable_guest_list ?? true)) abort(404);
 
         if (!$event->guest_list_pin_hash) abort(403);
 
@@ -44,7 +50,7 @@ class Pin extends Component
 
         session()->put('guest_list_access.' . $event->id, true);
 
-        return redirect()->route('public.guests.list', $event->token);
+        return redirect()->intended(route('public.guests.list', $event->token));
     }
 
     public function render()
@@ -52,4 +58,3 @@ class Pin extends Component
         return view('livewire.public-guests.pin');
     }
 }
-

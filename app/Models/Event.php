@@ -19,6 +19,9 @@ class Event extends Model
         'token',
 
         'is_active',
+        'enable_rsvp',
+        'enable_guest_list',
+        'enable_qr_codes',
         'expires_at',
 
         'date_at',
@@ -50,6 +53,9 @@ class Event extends Model
         'content' => 'array',
         'style' => 'array',
         'is_active' => 'boolean',
+        'enable_rsvp' => 'boolean',
+        'enable_guest_list' => 'boolean',
+        'enable_qr_codes' => 'boolean',
         'guest_list_pin_set_at' => 'datetime',
     ];
 

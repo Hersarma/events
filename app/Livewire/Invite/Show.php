@@ -29,6 +29,11 @@ class Show extends Component
 
     public bool $sent = false;
     public ?string $successMessage = null;
+    public string $qr_phone_country = '';
+    public string $qr_phone_number = '';
+    public ?string $qrDownloadUrl = null;
+    public ?string $qrLookupMessage = null;
+
     public function mount(string $token): void
     {
         $event = Event::where('token', $token)->firstOrFail();
@@ -44,6 +49,8 @@ class Show extends Component
 
     public function submit(): void
     {
+        abort_unless($this->event->enable_rsvp ?? true, 404);
+
         $this->successMessage = null;
         $messages = [
             'name.required' => data_get($this->event->content, 'rsvp_err_name_required', 'Molimo unesite ime i prezime.'),
@@ -121,9 +128,62 @@ class Show extends Component
             ]
         );
 
+        $this->qrDownloadUrl = null;
+
+        if (($this->event->enable_qr_codes ?? false) && $guests > 0) {
+            $this->qrDownloadUrl = route('invite.qr.download', [
+                'token' => $this->event->token,
+                'guestToken' => $invitedGuest->ensureQrToken(),
+            ]);
+        }
+
         $this->successMessage = 'Hvala! Vaša potvrda je uspješno poslana.';
 
         $this->resetRsvpForm();
+    }
+
+    public function retrieveQr(): void
+    {
+        abort_unless($this->event->enable_qr_codes ?? false, 404);
+
+        $this->qrLookupMessage = null;
+        $this->qrDownloadUrl = null;
+
+        $this->validate([
+            'qr_phone_country' => ['required', 'string', 'max:3'],
+            'qr_phone_number' => ['required', 'string', 'max:30'],
+        ], [
+            'qr_phone_country.required' => 'Unesite pozivni broj države.',
+            'qr_phone_number.required' => 'Unesite broj telefona.',
+        ]);
+
+        $countryCode = preg_replace('/\D+/', '', $this->qr_phone_country);
+        $localNumber = preg_replace('/\D+/', '', $this->qr_phone_number);
+        $localNumber = ltrim($localNumber, '0');
+
+        if ($countryCode === '' || $localNumber === '') {
+            $this->addError('qr_phone_number', 'Broj telefona nije ispravan.');
+            return;
+        }
+
+        $normalizedPhone = $this->normalizePhone('+' . $countryCode . ' ' . $localNumber);
+
+        $guest = EventGuest::where('event_id', $this->event->id)
+            ->where('phone_normalized', $normalizedPhone)
+            ->whereHas('rsvp', fn ($q) => $q->whereIn('status', ['yes', 'couple']))
+            ->with('rsvp')
+            ->first();
+
+        if (!$guest) {
+            $this->addError('qr_phone_number', 'Nije pronađena potvrda dolaska za ovaj broj.');
+            return;
+        }
+
+        $this->qrDownloadUrl = route('invite.qr.download', [
+            'token' => $this->event->token,
+            'guestToken' => $guest->ensureQrToken(),
+        ]);
+        $this->qrLookupMessage = 'QR kod je pronađen.';
     }
 
     public function resetRsvpForm(): void

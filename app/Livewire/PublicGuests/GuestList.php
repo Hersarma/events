@@ -37,6 +37,10 @@ class GuestList extends Component
 
         $this->event = Event::where('token', $token)->firstOrFail();
 
+        if (!($this->event->enable_guest_list ?? true)) {
+            abort(404);
+        }
+
         if (!session()->get('guest_list_access.' . $this->event->id)) {
             redirect()->route('public.guests.pin', $token)->send();
         }
@@ -251,6 +255,9 @@ class GuestList extends Component
             ->count();
 
         $notAnsweredCount = $invitedCount - $answeredCount;
+        $checkedInCount = EventGuest::where('event_id', $this->event->id)
+            ->whereNotNull('checked_in_at')
+            ->count();
 
         return view('livewire.public-guests.guest-list', [
             'event' => $this->event,
@@ -260,6 +267,7 @@ class GuestList extends Component
             'invitedCount' => $invitedCount,
             'answeredCount' => $answeredCount,
             'notAnsweredCount' => $notAnsweredCount,
+            'checkedInCount' => $checkedInCount,
         ]);
     }
 }

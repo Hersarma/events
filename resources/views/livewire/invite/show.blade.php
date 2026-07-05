@@ -115,9 +115,11 @@ x-data="{
                 @include('livewire.invite.sections._map', [
                 'event' => $event, 's' => $s, 'himg' => $himg
                 ])
-                @include('livewire.invite.sections._rsvp+footer', [
-                'event' => $event, 'c' => $c, 's' => $s, 'formKey' => $formKey
-                ])
+                @if($event->enable_rsvp ?? true)
+                    @include('livewire.invite.sections._rsvp+footer', [
+                    'event' => $event, 'c' => $c, 's' => $s, 'formKey' => $formKey
+                    ])
+                @endif
                 @include('livewire.invite.sections._styles')
             </div>
         </div>

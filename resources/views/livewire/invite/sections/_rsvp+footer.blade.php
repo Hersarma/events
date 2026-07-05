@@ -164,6 +164,97 @@ $footerTextColor = data_get($s, 'footer.text_color', $rsvpTitleColor);
                 </form>
             </div>
         </div>
+
+        @if($event->enable_qr_codes ?? false)
+            <div class="mx-auto mt-6 max-w-xl rounded-lg p-6 sm:p-8"
+                style="background: {{ $rsvpCardBg }}; border: 1px solid {{ $rsvpCardBg }};">
+                @if($qrDownloadUrl)
+                    <div class="text-center">
+                        <div class="text-base font-semibold" style="color: {{ $rsvpLabelColor }};">
+                            Vaš QR kod je spreman.
+                        </div>
+                        @if($qrLookupMessage)
+                            <p class="mt-1 text-sm" style="color: {{ $rsvpLabelColor }};">
+                                {{ $qrLookupMessage }}
+                            </p>
+                        @endif
+                        <a
+                            href="{{ $qrDownloadUrl }}"
+                            class="mt-4 inline-flex items-center justify-center px-6 py-3 text-base font-semibold shadow-sm"
+                            style="background: {{ $rsvpBtnBg }}; color: {{ $rsvpBtnText }};"
+                        >
+                            Preuzmi QR kod
+                        </a>
+                    </div>
+                @else
+                    <div class="text-center">
+                        <div class="text-base font-semibold" style="color: {{ $rsvpLabelColor }};">
+                            Već ste potvrdili dolazak?
+                        </div>
+                        <p class="mt-1 text-sm" style="color: {{ $rsvpLabelColor }};">
+                            Unesite broj telefona i ponovo preuzmite QR kod.
+                        </p>
+                    </div>
+
+                    <div class="mt-5">
+                        <label class="block text-base font-medium" style="color: {{ $rsvpLabelColor }};">
+                            {{ $phoneLabel }}
+                        </label>
+
+                        <div
+                            class="mt-2 flex overflow-hidden"
+                            style="background: {{ $rsvpInputBg }}; border: 1px solid {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
+                        >
+                            <div
+                                class="flex items-center border-r px-4 py-3 text-base font-semibold"
+                                style="border-color: {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
+                            >
+                                +
+                            </div>
+
+                            <input
+                                wire:model.defer="qr_phone_country"
+                                type="text"
+                                inputmode="numeric"
+                                class="rsvp-phone-input w-24 border-0 border-r px-3 py-3 text-base outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:shadow-none"
+                                style="background: {{ $rsvpInputBg }}; border-right-color: {{ $rsvpInputBorder }}; color: {{ $rsvpInputText }};"
+                                placeholder="pozivni"
+                            />
+
+                            <input
+                                wire:model.defer="qr_phone_number"
+                                type="text"
+                                inputmode="tel"
+                                autocomplete="tel"
+                                class="rsvp-phone-input min-w-0 flex-1 border-0 px-3 py-3 text-base outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:shadow-none"
+                                style="background: {{ $rsvpInputBg }}; color: {{ $rsvpInputText }};"
+                                placeholder="broj telefona"
+                            />
+                        </div>
+
+                        @error('qr_phone_country')
+                            <p class="mt-1 text-base text-red-700">{{ $message }}</p>
+                        @enderror
+
+                        @error('qr_phone_number')
+                            <p class="mt-1 text-base text-red-700">{{ $message }}</p>
+                        @enderror
+
+                        <button
+                            type="button"
+                            wire:click="retrieveQr"
+                            wire:loading.attr="disabled"
+                            wire:target="retrieveQr"
+                            class="mt-4 inline-flex items-center justify-center px-6 py-3 text-base font-semibold shadow-sm disabled:opacity-60"
+                            style="background: {{ $rsvpBtnBg }}; color: {{ $rsvpBtnText }};"
+                        >
+                            <span wire:loading.remove wire:target="retrieveQr">Pronađi QR kod</span>
+                            <span wire:loading wire:target="retrieveQr">Tražim...</span>
+                        </button>
+                    </div>
+                @endif
+            </div>
+        @endif
         
         {{-- Footer --}}
         <div class="mt-10 text-center">

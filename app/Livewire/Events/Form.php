@@ -23,6 +23,9 @@ public string $location_address = '';
 public string $location_url = '';
 public string $rsvp_email = '';
 public bool $is_active = true;
+public bool $enable_rsvp = true;
+public bool $enable_guest_list = true;
+public bool $enable_qr_codes = false;
 public ?string $expires_at = null;
 public string $hero_type = 'video'; // video|image
 // LOCATION colors
@@ -84,6 +87,9 @@ $this->location_address = $event->location_address ?? '';
 $this->location_url = $event->location_url ?? '';
 $this->rsvp_email = $event->rsvp_email ?? '';
 $this->is_active = (bool) $event->is_active;
+$this->enable_rsvp = (bool) ($event->enable_rsvp ?? true);
+$this->enable_guest_list = (bool) ($event->enable_guest_list ?? true);
+$this->enable_qr_codes = (bool) ($event->enable_qr_codes ?? false);
 $this->expires_at = $event->expires_at?->format('Y-m-d\TH:i');
 $this->hero_type = $event->hero_type ?: 'video';
 $this->hero_video_path = $event->hero_video_path;
@@ -153,6 +159,9 @@ $this->validate([
 'location_url' => ['nullable', 'string', 'max:255'],
 'rsvp_email' => ['nullable', 'email', 'max:190'],
 'is_active' => ['boolean'],
+'enable_rsvp' => ['boolean'],
+'enable_guest_list' => ['boolean'],
+'enable_qr_codes' => ['boolean'],
 'expires_at' => ['nullable', 'date'],
 'hero_type' => ['required', 'in:video,image'],
 'hero_video' => ['nullable', 'file', 'mimetypes:video/mp4', 'max:51200'],
@@ -254,6 +263,9 @@ $payload = [
 'location_url' => $this->location_url ?: null,
 'rsvp_email' => $this->rsvp_email ?: null,
 'is_active' => (bool) $this->is_active,
+'enable_rsvp' => (bool) $this->enable_rsvp,
+'enable_guest_list' => (bool) $this->enable_guest_list,
+'enable_qr_codes' => (bool) $this->enable_qr_codes,
 'expires_at' => $this->expires_at ? now()->parse($this->expires_at) : null,
 'hero_type' => $this->hero_type,
 'hero_video_path' => $this->hero_video_path,
@@ -469,6 +481,9 @@ public function getPreviewEventProperty(): Event
     $e->location_marker_path = $this->location_marker ? $this->location_marker->temporaryUrl() : $this->location_marker_path;
 
     $e->rsvp_email = $this->rsvp_email ?: null;
+    $e->enable_rsvp = $this->enable_rsvp;
+    $e->enable_guest_list = $this->enable_guest_list;
+    $e->enable_qr_codes = $this->enable_qr_codes;
 
     return $e;
 }

@@ -36,7 +36,43 @@
   {{-- LEFT: Editor --}}
   <div>
     <form wire:submit.prevent="save" class="mt-6 space-y-6">
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 space-y-4">
+            <div>
+                <div class="font-semibold text-lg">Funkcije pozivnice</div>
+                <p class="text-sm text-gray-600 mt-1">
+                    Uključi samo delove koji su potrebni za ovu pozivnicu.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <label class="flex items-start gap-3 rounded-2xl border border-gray-200 p-4">
+                    <input type="checkbox" wire:model.live="enable_rsvp" class="mt-1 h-5 w-5 rounded border-gray-300" />
+                    <span>
+                        <span class="block text-sm font-semibold text-gray-900">RSVP forma</span>
+                        <span class="mt-1 block text-xs text-gray-600">Gosti mogu potvrditi dolazak preko pozivnice.</span>
+                    </span>
+                </label>
+
+                <label class="flex items-start gap-3 rounded-2xl border border-gray-200 p-4">
+                    <input type="checkbox" wire:model.live="enable_guest_list" class="mt-1 h-5 w-5 rounded border-gray-300" />
+                    <span>
+                        <span class="block text-sm font-semibold text-gray-900">Lista gostiju</span>
+                        <span class="mt-1 block text-xs text-gray-600">Klijent dobija PIN stranicu za goste i štampu liste.</span>
+                    </span>
+                </label>
+
+                <label class="flex items-start gap-3 rounded-2xl border border-gray-200 p-4">
+                    <input type="checkbox" wire:model.live="enable_qr_codes" class="mt-1 h-5 w-5 rounded border-gray-300" />
+                    <span>
+                        <span class="block text-sm font-semibold text-gray-900">QR kodovi</span>
+                        <span class="mt-1 block text-xs text-gray-600">Priprema za QR preuzimanje i check-in na ulazu.</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
         {{-- 0) OSNOVNE INFORMACIJE (meta događaja) --}}
+       @if($enable_guest_list)
        <div class="rounded-2xl border border-gray-200 bg-white p-6 space-y-4">
 
     <div class="text-center">
@@ -109,6 +145,7 @@
 
     </div>
 </div>
+@endif
 
 
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
@@ -213,14 +250,14 @@
                   @php $k = md5($hero_video->getFilename() . '|' . $hero_video->getSize()); @endphp
 
                   <div class="rounded-2xl border border-gray-200 overflow-hidden">
-                    <video wire:key="hero-video-upload-{{ $k }}" class="w-40 h-80 object-cover" controls playsinline>
+                    <video wire:key="hero-video-upload-{{ $k }}" class="w-40 h-80 object-cover" controls playsinline muted>
                       <source src="{{ $hero_video->temporaryUrl() }}" type="video/mp4">
                     </video>
                   </div>
 
                 @elseif($hero_video_path)
                   <div class="rounded-2xl border border-gray-200 overflow-hidden">
-                    <video wire:key="hero-video-stored-{{ md5($hero_video_path) }}" class="w-40 h-80 object-cover" controls playsinline>
+                    <video wire:key="hero-video-stored-{{ md5($hero_video_path) }}" class="w-40 h-80 object-cover" controls playsinline muted>
                       <source src="{{ asset('storage/'.$hero_video_path) }}" type="video/mp4">
                     </video>
                   </div>
@@ -496,6 +533,7 @@
             </div>
         </div>
         {{-- 5) RSVP (tekst + stil) --}}
+        @if($enable_rsvp)
         <div class="rounded-2xl border border-gray-200 bg-white p-5 space-y-4">
             <div class="font-semibold">5) RSVP (tekst + stil)</div>
             {{-- RSVP tekstovi (iz tvog “Tekstovi” bloka) --}}
@@ -690,6 +728,7 @@
                 </div>
             </div>
         </div>
+        @endif
         {{-- 7) STATUS --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="rounded-2xl border border-gray-200 bg-white p-4">

@@ -40,6 +40,9 @@
       preload="metadata"
       autoplay
       loop
+      muted
+      x-effect="$el.muted = previewMuted; $el.volume = previewMuted ? 0 : 1"
+      x-on:loadedmetadata="applyPreviewMute()"
     >
       <source src="{{ $video2Src }}" type="video/mp4">
     </video>
@@ -61,6 +64,9 @@
       preload="metadata"
       autoplay
       loop
+      muted
+      x-effect="$el.muted = previewMuted; $el.volume = previewMuted ? 0 : 1"
+      x-on:loadedmetadata="applyPreviewMute()"
     >
       <source src="{{ $video1Src }}" type="video/mp4">
     </video>

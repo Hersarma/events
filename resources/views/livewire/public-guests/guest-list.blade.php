@@ -21,6 +21,16 @@
                     </div>
                 </div>
 
+                <div class="flex flex-col gap-2 sm:flex-row">
+                @if($event->enable_qr_codes ?? false)
+                    <a
+                        href="{{ route('public.guests.scan', $event->token) }}"
+                        class="no-print inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                    >
+                        Skeniraj QR
+                    </a>
+                @endif
+
                 <div class="no-print relative" x-data="{ open: false }" @click.outside="open = false">
                     <button
                         type="button"
@@ -66,10 +76,11 @@
                         </button>
                     </div>
                 </div>
+                </div>
             </div>
 
             {{-- STATISTIKA --}}
-            <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
                 <div class="rounded-xl border border-gray-200 p-4">
                     <div class="text-xs text-gray-500">Pozvano</div>
                     <div class="text-2xl font-bold text-gray-900">
@@ -97,6 +108,15 @@
                         {{ $notAnsweredCount }}
                     </div>
                 </div>
+
+                @if($event->enable_qr_codes ?? false)
+                    <div class="rounded-xl border border-gray-200 p-4">
+                        <div class="text-xs text-gray-500">Čekirano</div>
+                        <div class="text-2xl font-bold text-gray-900">
+                            {{ $checkedInCount }}
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -331,6 +351,16 @@
                                 </div>
                             @endif
 
+                            @if(($event->enable_qr_codes ?? false) && $guest->checked_in_at)
+                                <div class="mt-2 rounded-xl bg-green-50 px-3 py-2 text-sm text-green-800">
+                                    Čekirano:
+                                    {{ $guest->checked_in_at->format('d.m.Y H:i') }}
+                                    @if($guest->checked_in_count)
+                                        · {{ $guest->checked_in_count }} osoba
+                                    @endif
+                                </div>
+                            @endif
+
                             @if($guest->note)
                                 <div class="mt-3 rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-700">
                                     {{ $guest->note }}
@@ -345,6 +375,15 @@
                         </div>
 
                         <div class="no-print flex shrink-0 gap-2 sm:flex-col">
+                            @if(($event->enable_qr_codes ?? false) && $rsvp && in_array($rsvp->status, ['yes', 'couple'], true))
+                                <a
+                                    href="{{ route('invite.qr.download', ['token' => $event->token, 'guestToken' => $guest->qr_token]) }}"
+                                    class="rounded-xl border border-gray-200 bg-white px-4 py-2 text-center text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                                >
+                                    QR
+                                </a>
+                            @endif
+
                             <button
                                 type="button"
                                 wire:click="editGuest({{ $guest->id }})"
