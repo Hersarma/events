@@ -69,6 +69,34 @@
                     </span>
                 </label>
             </div>
+
+            @if($enable_rsvp)
+                <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                    <div class="text-sm font-semibold text-gray-900">Opcije u RSVP formi</div>
+                    <p class="mt-1 text-xs text-gray-600">Izaberite koje odgovore gost može da pošalje.</p>
+
+                    <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <label class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+                            <input type="checkbox" wire:model.live="rsvp_option_yes" class="h-5 w-5 rounded border-gray-300" />
+                            <span class="text-sm font-medium text-gray-900">Dolazim sam</span>
+                        </label>
+
+                        <label class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+                            <input type="checkbox" wire:model.live="rsvp_option_couple" class="h-5 w-5 rounded border-gray-300" />
+                            <span class="text-sm font-medium text-gray-900">Dolazim u dvoje</span>
+                        </label>
+
+                        <label class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+                            <input type="checkbox" wire:model.live="rsvp_option_no" class="h-5 w-5 rounded border-gray-300" />
+                            <span class="text-sm font-medium text-gray-900">Ne dolazim</span>
+                        </label>
+                    </div>
+
+                    @error('rsvp_options')
+                        <p class="mt-2 text-sm font-medium text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
         </div>
 
         {{-- 0) OSNOVNE INFORMACIJE (meta događaja) --}}

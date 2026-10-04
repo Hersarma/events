@@ -26,6 +26,9 @@ public bool $is_active = true;
 public bool $enable_rsvp = true;
 public bool $enable_guest_list = true;
 public bool $enable_qr_codes = false;
+public bool $rsvp_option_yes = true;
+public bool $rsvp_option_couple = true;
+public bool $rsvp_option_no = true;
 public ?string $expires_at = null;
 public string $hero_type = 'video'; // video|image
 // LOCATION colors
@@ -122,6 +125,9 @@ $this->rsvp_button_text = data_get($event->style, 'rsvp.button_text', '#ffffff')
 $this->footer_text_color = data_get($event->style, 'footer.text_color', '#ffffff');
 // ✅ content/style iz baze (bez default teksta)
 $this->content = is_array($event->content) ? $event->content : [];
+$this->rsvp_option_yes = (bool) data_get($this->content, 'rsvp_options.yes', true);
+$this->rsvp_option_couple = (bool) data_get($this->content, 'rsvp_options.couple', true);
+$this->rsvp_option_no = (bool) data_get($this->content, 'rsvp_options.no', true);
 $this->style   = is_array($event->style) ? $event->style : $this->whiteStyle();
 } else {
 // ✅ NOV EVENT: prazan content, neutral style
@@ -149,6 +155,13 @@ $this->applyStyleToProps($this->style);
 }
 public function save(): void
 {
+$this->resetErrorBag('rsvp_options');
+
+if ($this->enable_rsvp && ! $this->hasEnabledRsvpOption()) {
+$this->addError('rsvp_options', 'Izaberite bar jednu RSVP opciju ili isključite RSVP formu.');
+return;
+}
+
 $this->validate([
 'template' => ['required', 'in:celebration'],
 'language' => ['required', 'string', 'max:10'],
@@ -162,6 +175,9 @@ $this->validate([
 'enable_rsvp' => ['boolean'],
 'enable_guest_list' => ['boolean'],
 'enable_qr_codes' => ['boolean'],
+'rsvp_option_yes' => ['boolean'],
+'rsvp_option_couple' => ['boolean'],
+'rsvp_option_no' => ['boolean'],
 'expires_at' => ['nullable', 'date'],
 'hero_type' => ['required', 'in:video,image'],
 'hero_video' => ['nullable', 'file', 'mimetypes:video/mp4', 'max:51200'],
@@ -221,6 +237,9 @@ data_set($this->style, 'rsvp.radio_border', $this->rsvp_radio_border);
 data_set($this->style, 'rsvp.button_bg', $this->rsvp_button_bg);
 data_set($this->style, 'rsvp.button_text', $this->rsvp_button_text);
 data_set($this->style, 'footer.text_color', $this->footer_text_color);
+data_set($this->content, 'rsvp_options.yes', $this->rsvp_option_yes);
+data_set($this->content, 'rsvp_options.couple', $this->rsvp_option_couple);
+data_set($this->content, 'rsvp_options.no', $this->rsvp_option_no);
 // upload marker
 if ($this->location_marker) {
 if ($this->event?->location_marker_path) {
@@ -469,7 +488,12 @@ public function getPreviewEventProperty(): Event
 
     data_set($style, 'footer.text_color', $this->footer_text_color);
 
-    $e->content = $this->content;
+    $content = $this->content;
+    data_set($content, 'rsvp_options.yes', $this->rsvp_option_yes);
+    data_set($content, 'rsvp_options.couple', $this->rsvp_option_couple);
+    data_set($content, 'rsvp_options.no', $this->rsvp_option_no);
+
+    $e->content = $content;
     $e->style   = $style;
 
     $e->hero_type = $this->hero_type;
@@ -486,6 +510,13 @@ public function getPreviewEventProperty(): Event
     $e->enable_qr_codes = $this->enable_qr_codes;
 
     return $e;
+}
+
+private function hasEnabledRsvpOption(): bool
+{
+    return $this->rsvp_option_yes
+        || $this->rsvp_option_couple
+        || $this->rsvp_option_no;
 }
 
 public function clearRsvps(): void

@@ -5,6 +5,7 @@ namespace App\Livewire\Invite;
 use App\Models\Event;
 use App\Models\EventGuest;
 use App\Models\EventRsvp;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -45,6 +46,7 @@ class Show extends Component
         }
 
         $this->event = $event;
+        $this->status = array_key_first($this->allowedRsvpOptions()) ?? '';
     }
 
     public function submit(): void
@@ -62,8 +64,12 @@ class Show extends Component
             'email.email' => data_get($this->event->content, 'rsvp_err_email_email', 'Email nije ispravan.'),
         ];
 
+        $allowedStatuses = array_keys($this->allowedRsvpOptions());
+
+        abort_if($allowedStatuses === [], 404);
+
         $this->validate([
-            'status' => ['required', 'in:yes,couple,no'],
+            'status' => ['required', Rule::in($allowedStatuses)],
             'name' => ['required', 'string', 'min:2', 'max:80'],
             'email' => ['nullable', 'email', 'max:120'],
             'phone_country' => ['required', 'string', 'max:3'],
@@ -193,7 +199,7 @@ class Show extends Component
         $this->phone = '';
         $this->phone_country = '';
         $this->phone_number = '';
-        $this->status = 'yes';
+        $this->status = array_key_first($this->allowedRsvpOptions()) ?? '';
         $this->guests_count = 1;
 
         $this->resetValidation();
@@ -229,6 +235,17 @@ class Show extends Component
         }
 
         return $countryCode . $localNumber;
+    }
+
+    public function allowedRsvpOptions(): array
+    {
+        $options = [
+            'yes' => (bool) data_get($this->event->content, 'rsvp_options.yes', true),
+            'couple' => (bool) data_get($this->event->content, 'rsvp_options.couple', true),
+            'no' => (bool) data_get($this->event->content, 'rsvp_options.no', true),
+        ];
+
+        return array_filter($options);
     }
 
     public function render()
