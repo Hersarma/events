@@ -42,7 +42,8 @@ class GuestList extends Component
         }
 
         if (!session()->get('guest_list_access.' . $this->event->id)) {
-            redirect()->route('public.guests.pin', $token)->send();
+            $this->redirectRoute('public.guests.pin', ['token' => $token]);
+            return;
         }
     }
 

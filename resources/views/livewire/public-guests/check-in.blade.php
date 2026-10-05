@@ -74,6 +74,13 @@
                 >
                     Skeniraj sledeći
                 </a>
+
+                <a
+                    href="{{ route('public.guests.list', $event->token) }}"
+                    class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                >
+                    Lista gostiju
+                </a>
             </div>
         </div>
     </div>

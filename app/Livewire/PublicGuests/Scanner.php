@@ -19,7 +19,8 @@ class Scanner extends Component
 
         if (!session()->get('guest_list_access.' . $this->event->id)) {
             session()->put('url.intended', url()->current());
-            redirect()->route('public.guests.pin', $token)->send();
+            $this->redirectRoute('public.guests.pin', ['token' => $token]);
+            return;
         }
     }
 
